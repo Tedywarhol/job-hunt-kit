@@ -1,0 +1,182 @@
+/* ==========================================================================
+   Lettre de motivation — Design System (couleur primaire thémable / Slate)
+   Strictement calibrée pour 1 page A4 (210mm x 297mm)
+   ========================================================================== */
+
+@page {
+    size: A4 portrait;
+    margin: 0;
+}
+
+/* ==== THÈME (personnalisable via scripts/init.py) ==== */
+:root {
+    --primary: #323B4C;
+    --primary-soft: rgba(50, 59, 76, 0.85);
+    --slate-light: #f8fafc;
+    --slate: #cbd5e1;
+}
+
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+    color: var(--primary);
+    background: #ffffff;
+    font-size: 10.5px;
+    line-height: 1.6;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+.page {
+    width: 210mm;
+    height: 297mm;
+    max-height: 297mm;
+    overflow: hidden;
+    padding: 18mm 20mm;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+}
+
+/* En-tête */
+.head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 4mm;
+    margin-bottom: 6mm;
+}
+
+.head .name {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.head .role {
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 1.5mm;
+    opacity: 0.85;
+}
+
+.head .contact {
+    text-align: right;
+    color: var(--primary);
+    font-size: 9.8px;
+    line-height: 1.55;
+    opacity: 0.9;
+}
+.head .contact b {
+    font-weight: 700;
+}
+
+/* Destinataire & Date */
+.meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 6mm;
+}
+
+.meta .to {
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--primary);
+}
+.meta .org-sub {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--primary);
+    opacity: 0.85;
+    margin-top: 0.5mm;
+}
+
+.meta .place {
+    font-size: 10px;
+    color: var(--primary);
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+/* Objet */
+.subject-box {
+    background: var(--slate-light);
+    border-left: 3.5px solid var(--primary);
+    padding: 2.5mm 4mm;
+    margin-bottom: 5.5mm;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--primary);
+}
+.subject-box .accent {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* Corps du texte */
+.body {
+    flex: 1;
+}
+
+.body p {
+    margin-bottom: 3.8mm;
+    text-align: justify;
+    font-size: 10.3px;
+    line-height: 1.58;
+}
+
+.body .salut {
+    margin-bottom: 4mm;
+    font-weight: 600;
+}
+
+.body ul {
+    list-style: none;
+    margin: 2mm 0 4mm 0;
+    padding-left: 0;
+}
+
+.body ul li {
+    position: relative;
+    padding-left: 4mm;
+    margin-bottom: 1.8mm;
+    font-size: 10.2px;
+    line-height: 1.5;
+}
+
+.body ul li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+/* Signature */
+.sign {
+    margin-top: 4mm;
+}
+
+.sign .cordial {
+    margin-bottom: 5mm;
+    font-size: 10.3px;
+}
+
+.sign .who {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 12px;
+    text-transform: uppercase;
+}

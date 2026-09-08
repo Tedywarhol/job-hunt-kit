@@ -1,0 +1,68 @@
+# Profils de recherche du Radar (édition libre).
+# Le job-scout combine mots-clés x types x localisations pour construire les requêtes.
+
+mots_cles:
+  - "GenAI"
+  - "Data Scientist"
+  - "Data Analyst"
+  - "Machine Learning"
+  - "LLM"
+  - "Data Engineer"
+  - "IA générative"
+
+types_contrat:
+  - "stage"
+  - "alternance"
+
+localisations:
+  - "Paris"
+  - "Île-de-France"
+  - "remote France"
+
+# Fenêtre de fraîcheur : on ignore les offres plus vieilles que N jours.
+max_age_jours: 30
+
+# Seuil de score (0-100) pour passer une offre en statut "À traiter".
+seuil_score: 60
+
+# Sources activées, PAR ORDRE DE PRIORITÉ (les ATS directs d'abord = candidatures autonomes).
+# Le scout privilégie les sources les mieux notées en "autonomie" ci-dessous.
+sources:
+  - ats_teamtailor   # autonome (sans captcha/login) — MEILLEUR
+  - ats_greenhouse   # souvent autonome
+  - ats_ashby        # souvent autonome
+  - ats_lever        # formulaire direct MAIS hCaptcha -> fallback Chrome
+  - wttj             # login requis -> fallback ; garder pour la détection
+  - hellowork
+  - indeed
+
+# Autonomie par ATS (indicatif, pour prioriser et pré-taguer les offres).
+#   auto  = remplissage + soumission 100% autonomes (Playwright)
+#   captcha = formulaire direct mais CAPTCHA -> fallback Chrome visible
+#   login = mur de connexion -> fallback Chrome (session user)
+autonomie_ats:
+  teamtailor: auto
+  greenhouse: auto
+  ashby: auto
+  tally: auto
+  lever: captcha
+  welcometothejungle: login
+  linkedin: login
+  indeed: login
+
+# Bonus de score pour prioriser les offres postulables en autonome (appliqué par le scorer).
+bonus_autonomie:
+  auto: 8
+  captcha: 2
+  login: 0
+
+# Requêtes Google prêtes à l'emploi (Apify rag-web-browser / Firecrawl). {kw},{type},{loc} substitués.
+# On cible d'abord les domaines ATS directs.
+requetes_google:
+  ats_teamtailor: '({kw}) {type} {loc} site:teamtailor.com'
+  ats_greenhouse: '({kw}) {type} {loc} (site:boards.greenhouse.io OR site:job-boards.greenhouse.io)'
+  ats_ashby: '({kw}) {type} {loc} site:jobs.ashbyhq.com'
+  ats_lever: '({kw}) {type} {loc} site:jobs.lever.co'
+  wttj: 'site:welcometothejungle.com {kw} {type} {loc}'
+  hellowork: 'site:hellowork.com {kw} {type} {loc}'
+  indeed: 'site:fr.indeed.com {kw} {type} {loc}'

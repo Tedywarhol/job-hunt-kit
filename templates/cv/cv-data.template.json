@@ -1,0 +1,157 @@
+{
+  "_lisez_moi": [
+    "SQUELETTE de cv-data.json — contenu maître du CV. Ne pas mettre de vrais candidats dans ce fichier :",
+    "scripts/init.py génère votre propre templates/cv/cv-data.json à partir de ce squelette.",
+    "Les champs personnels (personal, formation) sont remplis par le questionnaire d'init.",
+    "Les expériences, projets, compétences ci-dessous sont des EXEMPLES à remplacer par les vôtres (même structure).",
+    "Règles de rédaction : jamais « Stagiaire/Alternant » dans les titres d'expérience ; chaque expérience",
+    "se termine par un résultat chiffré « ✓ Bilan : ... »."
+  ],
+  "personal": {
+    "nom": "Prénom NOM",
+    "prenom": "Prénom",
+    "nom_famille": "NOM",
+    "telephone": "+33 6 00 00 00 00",
+    "email": "vous@example.com",
+    "localisation": "Paris (75), France",
+    "linkedin": "Prénom NOM",
+    "linkedin_url": "https://www.linkedin.com/in/votre-profil/",
+    "github_url": "https://github.com/votre-profil"
+  },
+  "badge_titre": "Ingénieur Data & IA",
+  "profil_resume": "3-4 phrases : votre domaine, vos compétences centrales, ce que vous savez livrer. Exemple : « Étudiant en cycle ingénieur Data Science & IA, je conçois et déploie des solutions d'IA sur-mesure intégrant des LLM, des architectures RAG et des pipelines de données robustes (Python, SQL, ETL), avec une exigence de rigueur et d'impact métier. »",
+  "profiles": {
+    "alternance": {
+      "titre_defaut": "Alternance <votre domaine>",
+      "target_tags": [
+        {"icon": "far fa-calendar-alt", "text": "24 mois dès <mois année>"},
+        {"icon": "fas fa-sync-alt", "text": "<rythme école/entreprise>"},
+        {"icon": "fas fa-map-marker-alt", "text": "<villes / régions visées>"}
+      ],
+      "disponibilite": [
+        "Contrat d'apprentissage · 24 mois",
+        "Rythme : <rythme>",
+        "Disponible dès <date>"
+      ],
+      "formation": [
+        {
+          "periode": "AAAA – AAAA",
+          "intitule": "Cycle Ingénieur · <spécialité>",
+          "etablissement": "<école d'ingénieur (alternance)>",
+          "lieu": "<ville>",
+          "detail": "Spécialisation <majeure>"
+        },
+        {
+          "periode": "AAAA – AAAA",
+          "intitule": "<formation précédente>",
+          "etablissement": "<établissement>",
+          "lieu": "<ville>",
+          "detail": "<détail>"
+        },
+        {
+          "periode": "AAAA",
+          "intitule": "Baccalauréat <série>",
+          "etablissement": "<lycée>",
+          "lieu": "<ville>",
+          "detail": "Mention <mention> · Spécialité <spécialités>"
+        }
+      ]
+    },
+    "stage": {
+      "titre_defaut": "Stage <votre domaine>",
+      "target_tags": [
+        {"icon": "far fa-calendar-alt", "text": "Stage conventionné · <durée>"},
+        {"icon": "fas fa-clock", "text": "Temps plein"},
+        {"icon": "fas fa-map-marker-alt", "text": "<villes / régions visées>"}
+      ],
+      "disponibilite": [
+        "Stage conventionné · <durée>",
+        "Disponible dès <date>",
+        "Temps plein"
+      ],
+      "formation": [
+        {
+          "periode": "AAAA – AAAA",
+          "intitule": "Cycle Ingénieur · <spécialité>",
+          "etablissement": "<école d'ingénieur (stage)>",
+          "lieu": "<ville>",
+          "detail": "Majeure <majeure>"
+        },
+        {
+          "periode": "AAAA – AAAA",
+          "intitule": "<formation préparatoire>",
+          "etablissement": "<établissement>",
+          "lieu": "<ville>",
+          "detail": "<détail>"
+        },
+        {
+          "periode": "AAAA",
+          "intitule": "Baccalauréat <série>",
+          "etablissement": "<lycée>",
+          "lieu": "<ville>",
+          "detail": "Mention <mention>"
+        }
+      ]
+    }
+  },
+  "competences_cles": [
+    "Compétence clé n°1 (avec technologies entre parenthèses)",
+    "Compétence clé n°2",
+    "Compétence clé n°3",
+    "Compétence clé n°4"
+  ],
+  "outils": {
+    "IA & GenAI": ["OpenAI", "Hugging Face"],
+    "Machine Learning": ["Scikit-learn", "Pandas", "NumPy"],
+    "Data & BI": ["SQL", "Power BI"],
+    "Dev. & DevOps": ["Git", "Docker"],
+    "Langages": ["Python", "SQL"]
+  },
+  "savoir_etre": [
+    "Rigueur · Curiosité technique",
+    "Résolution de problèmes · Polyvalence",
+    "Travail d'équipe · Force de proposition"
+  ],
+  "langues": [
+    {"langue": "Anglais", "niveau": "Intermédiaire professionnel (B2)"}
+  ],
+  "certifications": [
+    "Exemple : certification pertinente pour votre domaine"
+  ],
+  "interets": [
+    "Centre d'intérêt 1",
+    "Centre d'intérêt 2"
+  ],
+  "experiences": [
+    {
+      "intitule": "Intitulé du poste (SANS « stagiaire » ni « alternant »)",
+      "entreprise": "Nom de l'entreprise",
+      "lieu": "Ville",
+      "periode": "Mois AAAA – Mois AAAA",
+      "points": [
+        "Action précise menée (contexte, outils, méthode).",
+        "Deuxième action si pertinent.",
+        "✓ Bilan : résultat CHIFFRÉ (ex : réduction de 70 % du temps de traitement)."
+      ],
+      "tags": ["mot-cle1", "mot-cle2", "mot-cle3"]
+    }
+  ],
+  "projets": [
+    {
+      "titre": "Nom descriptif du projet",
+      "stack": "Techno 1 · Techno 2 · Techno 3",
+      "points": [
+        "Ce que le projet fait et comment.",
+        "✓ Bilan : résultat chiffré ou livrable concret."
+      ],
+      "tags": ["tag1", "tag2"]
+    }
+  ],
+  "variables_defaut": {
+    "accroche": "",
+    "competences_ordre": [],
+    "projets_selection": ["Nom descriptif du projet"],
+    "projets_max": 2,
+    "mots_cles_ats": []
+  }
+}

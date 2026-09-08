@@ -1,0 +1,23 @@
+{
+  "_lisez_moi": "Squelette de config/notion.json — scripts/init.py (ou init_notion_db.py) écrit la vraie config après création de votre base. database_url = URL de VOTRE base Notion créée par l'init.",
+  "database_url": "https://www.notion.so/<votre-base>",
+  "data_source_id": "<rempli automatiquement par init>",
+  "collection_url": "collection://<rempli automatiquement>",
+  "colonnes": {
+    "titre": "Entreprise",
+    "poste": "Poste",
+    "type": "Type",
+    "statut": "Statut",
+    "lien": "Lien offre",
+    "source": "Source",
+    "ats": "ATS",
+    "lieu": "Lieu",
+    "score": "Score",
+    "contact": "Contact recruteur",
+    "etape_relance": "Étape relance",
+    "date_prochaine_relance": "Date prochaine relance",
+    "date_candidature": "Date candidature",
+    "pdf": "PDF",
+    "notes": "Notes matching"
+  }
+}

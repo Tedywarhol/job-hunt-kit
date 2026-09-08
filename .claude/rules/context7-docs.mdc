@@ -1,0 +1,61 @@
+---
+description: Impose l'utilisation systématique du MCP Context7 pour toute documentation de bibliothèque, framework, API ou package tiers, avec détection précise des déclencheurs, procédure d'appel, gestion des versions et comportement de repli en cas d'indisponibilité.
+globs:
+alwaysApply: true
+---
+
+# Documentation & MCP Context7 Rules
+
+## 1. Objectif
+
+Garantir que tout code, exemple ou explication impliquant une dépendance tierce (framework, bibliothèque, SDK, API) repose sur une documentation **à jour et vérifiée**, et non sur des connaissances d'entraînement potentiellement obsolètes, dépréciées ou hallucinées.
+
+## 2. Déclencheurs (quand appliquer cette règle)
+
+Applique cette règle dès qu'une requête implique, explicitement ou implicitement, l'un des cas suivants :
+- Écrire, corriger ou refactorer du code utilisant un framework, une bibliothèque, un package ou un SDK tiers (ex: Next.js, React, Vue, Tailwind, LangChain, Prisma, Three.js, Supabase, etc.).
+- Expliquer une API, une méthode, une prop, un hook ou une configuration appartenant à une dépendance externe (pas au code métier du projet).
+- Choisir entre plusieurs approches ou patterns d'implémentation propres à une techno tierce.
+- Diagnostiquer une erreur ou un bug impliquant une dépendance externe.
+- Toute mention explicite d'un nom de package, d'un numéro de version, ou d'un fichier de dépendances (`package.json`, `requirements.txt`, `pyproject.toml`, `Gemfile`, `composer.json`, etc.).
+
+Ne s'applique **pas** à :
+- La logique métier pure du projet sans dépendance externe impliquée.
+- Les langages de base sans framework (syntaxe JavaScript/Python/etc. générique).
+- Les questions purement conceptuelles ne nécessitant aucune référence à une API précise.
+
+## 3. Principe fondamental
+
+- Considère systématiquement tes connaissances internes sur les bibliothèques tierces comme **potentiellement obsolètes**, même pour des packages que tu "connais bien".
+- N'invente et ne complète JAMAIS de ta propre initiative : signatures de fonctions, noms de props, méthodes dépréciées/renommées, options de configuration, ou comportements par défaut — sans les avoir vérifiés.
+- En cas de doute entre deux versions d'une API, ne suppose jamais la plus récente ni la plus ancienne : vérifie.
+
+## 4. Procédure d'appel à Context7 (obligatoire, dans l'ordre)
+
+1. **Identifier la dépendance et sa version** :
+   - Cherche en priorité la version exacte dans les fichiers de configuration du projet (`package.json`, `requirements.txt`, `pyproject.toml`, `Cargo.toml`, `Gemfile.lock`, etc.).
+   - Si aucune version n'est trouvée dans le projet, utilise la version mentionnée explicitement par l'utilisateur.
+   - Si aucune des deux n'est disponible, interroge Context7 sans version fixée et signale à l'utilisateur que la version n'a pas pu être déterminée avec certitude.
+2. **Résoudre l'identifiant de la bibliothèque** via `resolve-library-id`.
+3. **Récupérer la documentation** via `get-library-docs`, en ciblant si possible la section ou le sujet précis concerné par la requête (pas seulement la doc générale) pour limiter le bruit.
+4. **Lire et analyser** la documentation retournée avant de rédiger la moindre ligne de code ou d'explication.
+
+## 5. Ancrage de la réponse
+
+- Base ton code et tes explications **exclusivement** sur la documentation fraîchement récupérée via Context7, pas sur un mélange avec ta mémoire.
+- Si la documentation Context7 contredit tes connaissances d'entraînement, la documentation Context7 **prévaut toujours, sans exception**.
+- Si Context7 confirme une information déjà connue, tu peux t'appuyer dessus normalement — l'appel reste néanmoins obligatoire pour valider.
+- Mentionne brièvement à l'utilisateur, si pertinent, que l'information provient de la documentation à jour de la bibliothèque (ex: "d'après la doc actuelle de X en v.Y").
+
+## 6. Comportement de repli (Context7 indisponible ou résultat insuffisant)
+
+- Si Context7 n'est pas accessible, ne retourne aucun résultat pertinent, ou ne couvre pas la bibliothèque demandée :
+  - Informe explicitement l'utilisateur que la vérification via Context7 a échoué ou est incomplète.
+  - Indique clairement si la réponse proposée s'appuie alors sur des connaissances d'entraînement non vérifiées, avec le niveau d'incertitude associé.
+  - Ne présente jamais une information non vérifiée comme si elle avait été confirmée par Context7.
+
+## 7. Cas particuliers
+
+- **Plusieurs dépendances dans une même requête** : répète la procédure (étapes 1 à 4) pour chaque bibliothèque concernée.
+- **Requête de simple lecture/relecture de code existant sans modification technique** : l'appel à Context7 n'est nécessaire que si une affirmation sur le comportement d'une API tierce est faite.
+- **Versions dépréciées ou "legacy"** : si le projet utilise une version ancienne d'un package, cible explicitement cette version dans Context7 plutôt que la dernière disponible.

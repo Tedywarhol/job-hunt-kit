@@ -1,0 +1,46 @@
+# Secrets — ne jamais versionner ni partager
+config/.notion_token
+config/credentials.json
+config/gmail_token.json
+config/auth_url.txt
+.env
+
+# Données personnelles & runtime
+outputs/
+logs/
+state/
+!state/.gitkeep
+
+# Artefacts personnels (même logique que make_kit.py — jamais dans le partage)
+index.html
+config/apply-routine-schedule-prompt.md
+docs/plans/2026-09-07-analyse-existant.md
+docs/plans/2026-09-07-plan-amelioration.md
+templates/cv/cv-data.json
+
+# Config locale réécrite par init.py (le kit contient les .template)
+config/notion.json
+config/.profile_done
+
+# Outils locaux / scratch
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+.claude/rules/00-dispatcher-skills.mdc
+.claude/rules/01-skill-router.mdc
+.claude/rules/10-session-start.mdc
+.claude/rules/20-ecriture-multiagents.mdc
+.claude/rules/20-new-project.mdc
+.claude/rules/30-new-feature.mdc
+.v2c/
+.video_agent/
+.zcode/
+out/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Kits générés
+job-hunt-kit_*.zip

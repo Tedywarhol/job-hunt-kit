@@ -1,0 +1,56 @@
+---
+description: Quality gate — checklist exhaustive avant commit, PR, ou livraison. À invoquer avant de dire "c'est fini".
+---
+
+# Quality gate
+
+À exécuter avant toute déclaration de complétion. Si une ligne n'est pas cochée, la tâche n'est pas finie.
+
+## Code
+- [ ] Aucune duplication > 3 lignes
+- [ ] Pas de fonction > 50 lignes (sinon découpe)
+- [ ] Pas de fichier > 300 lignes (sinon split)
+- [ ] Nommage clair, métier, en anglais (variables, fonctions, fichiers)
+- [ ] Aucun nombre / string magique : constantes nommées dans `config/` ou en haut du fichier
+- [ ] Pas de code commenté laissé dans le diff
+- [ ] Pas d'import inutilisé
+
+## Types & erreurs
+- [ ] TS strict / Python type hints à 100%
+- [ ] Pas de `any`, `as`, `# type: ignore` sans commentaire `// reason: ...`
+- [ ] Toute erreur attrapée → loggée OU remontée, jamais silencieuse
+- [ ] Validation des inputs externes (zod, pydantic, joi) avant tout usage
+- [ ] Erreurs typées côté front (Result, Either, ou union discriminée) plutôt que throw partout
+
+## Sécurité (skill : `senior-security` si doute)
+- [ ] Aucun secret committé — scan rapide du diff
+- [ ] `.env` gitignored, `.env.example` à jour
+- [ ] Inputs user → validés avant tout usage SQL / shell / fichier / fetch
+- [ ] **RLS active** sur toutes les tables Supabase touchées
+- [ ] Auth vérifiée à chaque endpoint sensible (pas seulement côté UI)
+- [ ] Pas de données sensibles en log
+- [ ] CORS / CSP configurés volontairement, pas par défaut
+
+## Performance
+- [ ] Pas de `SELECT *` en prod
+- [ ] Pas de N+1 (boucle qui requête la BDD)
+- [ ] **Index** sur les colonnes utilisées en `where` / `join` / `order by`
+- [ ] React : `useMemo` / `useCallback` seulement si profilage le justifie, pas par superstition
+- [ ] Server Components par défaut (Next App Router) ; `"use client"` uniquement si nécessaire
+- [ ] Images servies en formats modernes (avif/webp), `next/image` ou équivalent
+
+## Tests
+- [ ] Au moins 1 test pour le chemin nominal
+- [ ] 1 test par edge case identifié en phase brainstorm
+- [ ] CI passe en local
+- [ ] Pas de test skippé (`it.skip`, `xit`) sans ticket lié
+
+## Documentation
+- [ ] README à jour si comportement public change
+- [ ] Commentaires expliquent **pourquoi**, jamais **quoi**
+- [ ] Variables d'env documentées dans `.env.example`
+- [ ] Migrations Supabase versionnées et nommées clairement
+
+## Sortie
+Si tout est vert : « ✅ Quality gate passée — N items vérifiés. »
+Si rouge : liste précise de ce qui manque, sans demander la permission de fixer les éléments triviaux.

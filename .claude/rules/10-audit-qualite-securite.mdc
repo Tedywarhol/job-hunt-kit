@@ -1,0 +1,41 @@
+---
+description: Audit qualité & sécurité — à chaque action sur du code, vérifie écriture, syntaxe, duplication, cohérence, normes et failles. Effort proportionnel à la taille du diff. Autonome mais peut invoquer gstack.
+globs: **/*.ts,**/*.tsx,**/*.js,**/*.jsx,**/*.py,**/*.go,**/*.swift,**/*.kt,**/*.rs,**/*.sql
+alwaysApply: true
+---
+
+# Règle 2 — Audit qualité & sécurité du code
+
+## Objectif
+Aucun code n'est produit ou modifié sans passer par cet audit. La règle est toujours active ; son **intensité s'adapte** à l'ampleur du changement.
+
+## Matrice d'effort (proportionnalité)
+| Ampleur | Déclenche |
+|---|---|
+| **Trivial** (≤ ~10 lignes, fix isolé, renommage) | Checks inline rapides : syntaxe + 1 relecture, pas de rapport formel |
+| **Modéré** (un fichier, refactor local) | Checklist complète ci-dessous, rapport synthétique |
+| **Majeur / feature** | Audit complet + peut invoquer gstack (`/health`, `/review`, `/cso`) |
+
+## Checklist d'audit
+- **Syntaxe & compilation** : le code compile / parse sans erreur.
+- **Lisibilité** : nommage clair, fonctions courtes, structure logique.
+- **Duplication (DRY)** : repérer les blocs répétés, proposer une factorisation.
+- **Cohérence** : respecte les conventions et patterns déjà présents dans le codebase.
+- **Robustesse** : gestion d'erreurs, cas limites, valeurs nulles/vides.
+- **Sécurité** :
+  - injections (SQL, commande, XSS) ;
+  - secrets / clés en dur ;
+  - validation des entrées ;
+  - authentification / autorisation ;
+  - dépendances vulnérables ;
+  - exposition de données sensibles (logs, réponses API).
+- **Perf de base** : requêtes N+1, boucles coûteuses, allocations inutiles.
+
+## Hooks gstack (mode mix)
+- Audit approfondi → `/health`, `/review`.
+- Volet sécurité avancé → `/cso`.
+- Commande destructrice détectée → `/careful`.
+- Dossier gelé → respecter `/freeze` (ne pas modifier, signaler).
+
+## Sortie
+Rapport concis, une ligne par catégorie : ✅ OK / ⚠️ à surveiller / ❌ à corriger, suivi des correctifs proposés. Ne pas re-auditer ligne par ligne un changement trivial.

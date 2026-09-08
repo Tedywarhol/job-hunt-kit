@@ -1,0 +1,508 @@
+/* ==========================================================================
+   CV — Design System (Navy #323B4C & Slate)
+   Strictement calibré pour 1 page A4 (210mm x 297mm) - Police & Interlignes aérés
+   ========================================================================== */
+
+@page {
+    size: A4 portrait;
+    margin: 0;
+}
+
+/* ==== THÈME (personnalisable via scripts/init.py) ==== */
+:root {
+    --primary: #323B4C;
+    --primary-dark: #242B38;
+    --primary-soft: rgba(50, 59, 76, 0.85);
+    --slate-light: #f8fafc;
+    --slate: #cbd5e1;
+    --border-gray: #B6B9BF;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+    background: #ffffff;
+    color: var(--primary);
+    font-size: 8.7px;
+    line-height: 1.38;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+.cv-page {
+    width: 210mm;
+    height: 297mm;
+    max-height: 297mm;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 65mm 145mm;
+    background: #ffffff;
+    position: relative;
+}
+
+/* ==========================================
+   SIDEBAR (Gauche - 65mm, Fond var(--primary))
+   ========================================== */
+.sidebar {
+    background: var(--primary);
+    color: #ffffff;
+    padding: 6.5mm 5.5mm 4mm 5.8mm;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.sidebar .name {
+    font-size: 15.8px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.15;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.sidebar .badge-title {
+    font-size: 9.4px;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    margin-top: 2px;
+    opacity: 0.92;
+}
+
+.sidebar .divider {
+    border: 0;
+    height: 1.6px;
+    width: 26px;
+    background: #ffffff;
+    margin: 2mm 0 2.2mm 0;
+    opacity: 0.45;
+}
+
+.sidebar .section-title {
+    font-size: 8.6px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.1px;
+    color: #ffffff;
+    margin-top: 2.2mm;
+    margin-bottom: 1.2mm;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 0.5mm;
+}
+
+.sidebar .section-title:first-of-type {
+    margin-top: 0;
+}
+
+/* Coordonnées */
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 5.5px;
+    font-size: 8.4px;
+    color: #ffffff;
+    margin-bottom: 1mm;
+    font-weight: 400;
+}
+.contact-item .ico {
+    width: 10px;
+    color: #ffffff;
+    font-size: 8.8px;
+    text-align: center;
+    opacity: 0.85;
+    flex-shrink: 0;
+}
+.contact-item a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+/* Formation (Sidebar) */
+.edu-side-item {
+    margin-bottom: 1.3mm;
+}
+.edu-side-item:last-child {
+    margin-bottom: 0;
+}
+.edu-side-school {
+    font-weight: 700;
+    font-size: 8.5px;
+    color: #ffffff;
+    line-height: 1.18;
+}
+.edu-side-degree {
+    font-size: 7.9px;
+    color: rgba(255, 255, 255, 0.92);
+    line-height: 1.22;
+    margin-top: 0.2mm;
+}
+.edu-side-meta {
+    font-size: 7.4px;
+    color: rgba(255, 255, 255, 0.65);
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.2mm;
+}
+
+/* Compétences clés */
+.skill-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.skill-list li {
+    font-size: 8.2px;
+    color: #ffffff;
+    margin-bottom: 0.8mm;
+    line-height: 1.28;
+    position: relative;
+    padding-left: 2.8mm;
+    font-weight: 400;
+}
+.skill-list li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #ffffff;
+    font-weight: 700;
+    opacity: 0.75;
+}
+
+/* Stack technique */
+.tech-group {
+    margin-bottom: 1mm;
+}
+.tech-group .label {
+    font-size: 7.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.35px;
+    color: rgba(255, 255, 255, 0.75);
+    display: block;
+    margin-bottom: 0.2px;
+}
+.tech-group .value {
+    font-size: 8px;
+    color: #ffffff;
+    line-height: 1.24;
+    font-weight: 400;
+    opacity: 0.95;
+}
+
+/* Langues & Certifications */
+.lang-item, .cert-item {
+    font-size: 8.2px;
+    color: #ffffff;
+    margin-bottom: 0.8mm;
+    font-weight: 400;
+    line-height: 1.22;
+}
+.lang-item span, .cert-item span {
+    opacity: 0.78;
+}
+
+/* Intérêts (tags) */
+.interests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-top: 0.4mm;
+}
+.interests span {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    padding: 1px 4.5px;
+    font-size: 7.6px;
+    color: #ffffff;
+    font-weight: 400;
+    border-radius: 2px;
+}
+
+/* ==========================================
+   MAIN (Droite - 145mm, Fond Blanc)
+   ========================================== */
+.main {
+    background: #ffffff;
+    padding: 6mm 7.5mm 3.5mm 7mm;
+    color: var(--primary);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Bannière Objectif / Alternance */
+.target-banner {
+    background: var(--slate-light);
+    border-left: 3.5px solid var(--primary);
+    padding: 1.8mm 3.2mm;
+    margin-bottom: 1.8mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 3.5px;
+}
+.target-banner .target-title {
+    font-size: 11.8px;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+.target-banner .target-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    font-size: 8.2px;
+    color: var(--primary);
+    font-weight: 600;
+}
+.target-banner .target-tag {
+    background: #ffffff;
+    border: 1px solid var(--slate);
+    padding: 1.2px 5px;
+    border-radius: 2.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.main .section-title {
+    font-size: 9.8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.1px;
+    color: var(--primary);
+    border-bottom: 1px solid var(--border-gray);
+    padding-bottom: 0.4mm;
+    margin-top: 1.8mm;
+    margin-bottom: 1.2mm;
+}
+.main .section-title:first-of-type {
+    margin-top: 0;
+}
+
+.profile-text {
+    font-size: 8.6px;
+    line-height: 1.4;
+    color: var(--primary);
+    font-weight: 400;
+    text-align: justify;
+}
+.profile-text strong {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* ==========================================
+   TIMELINE (Cercle + Ligne verticale)
+   ========================================== */
+.timeline-item {
+    position: relative;
+    padding-left: 4.4mm;
+    margin-bottom: 1.4mm;
+}
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 1.1mm;
+    width: 2mm;
+    height: 2mm;
+    border: 1.4px solid var(--primary);
+    border-radius: 50%;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+.timeline-item::after {
+    content: '';
+    position: absolute;
+    left: 0.8mm;
+    top: 3.4mm;
+    width: 1px;
+    height: calc(100% - 2mm);
+    background: var(--primary);
+    opacity: 0.22;
+}
+.timeline-item:last-child {
+    margin-bottom: 0.3mm;
+}
+.timeline-item:last-child::after {
+    display: none;
+}
+
+/* En-tête Expériences (Grid) */
+.exp-header {
+    display: grid;
+    grid-template-columns: 1.45fr 1.05fr 0.7fr;
+    gap: 3.5px;
+    align-items: baseline;
+    margin-bottom: 0.25mm;
+}
+.exp-header .title {
+    font-weight: 700;
+    font-size: 9.2px;
+    color: var(--primary);
+}
+.exp-header .company {
+    font-weight: 500;
+    font-size: 8.5px;
+    color: var(--primary);
+    text-align: left;
+    opacity: 0.85;
+}
+.exp-header .date {
+    font-size: 8.1px;
+    color: var(--primary);
+    font-weight: 500;
+    text-align: right;
+    opacity: 0.75;
+}
+
+.exp-desc {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.15mm;
+}
+.exp-desc li {
+    font-size: 8.4px;
+    color: var(--primary);
+    line-height: 1.36;
+    padding-left: 3mm;
+    position: relative;
+    margin-bottom: 0.25mm;
+    font-weight: 400;
+}
+.exp-desc li::before {
+    content: '•';
+    color: var(--primary);
+    font-weight: 700;
+    position: absolute;
+    left: 0;
+    opacity: 0.6;
+}
+.exp-desc li strong {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.bilan {
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 8.3px;
+    display: block;
+    margin-top: 0.2mm;
+    opacity: 0.95;
+}
+
+/* ==========================================
+   PROJETS (Timeline avec puces structurées)
+   ========================================== */
+.project-item {
+    position: relative;
+    padding-left: 4.4mm;
+    margin-bottom: 1.2mm;
+}
+.project-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 1.1mm;
+    width: 2mm;
+    height: 2mm;
+    border: 1.4px solid var(--primary);
+    border-radius: 50%;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+.project-item::after {
+    content: '';
+    position: absolute;
+    left: 0.8mm;
+    top: 3.4mm;
+    width: 1px;
+    height: calc(100% - 2mm);
+    background: var(--primary);
+    opacity: 0.22;
+}
+.project-item:last-child {
+    margin-bottom: 0;
+}
+.project-item:last-child::after {
+    display: none;
+}
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 3.5px;
+    margin-bottom: 0.2mm;
+}
+.project-item .project-title {
+    font-weight: 700;
+    font-size: 9px;
+    color: var(--primary);
+}
+.project-item .project-stack {
+    font-size: 7.9px;
+    color: var(--primary);
+    font-weight: 500;
+    opacity: 0.75;
+    font-style: italic;
+    text-align: right;
+}
+
+.project-desc {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.15mm;
+}
+.project-desc li {
+    font-size: 8.4px;
+    color: var(--primary);
+    line-height: 1.36;
+    padding-left: 3mm;
+    position: relative;
+    margin-bottom: 0.25mm;
+    font-weight: 400;
+}
+.project-desc li::before {
+    content: '•';
+    color: var(--primary);
+    font-weight: 700;
+    position: absolute;
+    left: 0;
+    opacity: 0.6;
+}
+.project-desc li strong {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* ==========================================
+   COUCHE INVISIBLE ATS (OPTION B)
+   Blanc sur blanc, 1px, en bas de page
+   ========================================== */
+.ats-hidden-layer {
+    position: absolute;
+    bottom: 1mm;
+    right: 2mm;
+    color: #ffffff;
+    background: transparent;
+    font-size: 1px;
+    line-height: 1px;
+    letter-spacing: 0;
+    overflow: hidden;
+    opacity: 0.01;
+    user-select: none;
+    pointer-events: none;
+}

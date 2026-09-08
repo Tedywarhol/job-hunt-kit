@@ -1,0 +1,206 @@
+# Entreprises data/IA à surveiller sur leurs career pages ATS (seed, enrichi au fil du temps).
+# Le scout crawle ces pages en priorité — meilleur taux de formulaire remplissable.
+# ats: teamtailor | lever | greenhouse | welcomekit | autre
+
+entreprises:
+  # Greenhouse API
+  - nom: "Dataiku"
+    ats: "greenhouse"
+    careers_url: "https://boards.greenhouse.io/dataiku"
+  - nom: "Doctolib"
+    ats: "greenhouse"
+    careers_url: "https://boards.greenhouse.io/doctolib"
+  - nom: "Shift Technology"
+    ats: "greenhouse"
+    careers_url: "https://boards.greenhouse.io/shifttechnology"
+  - nom: "Mirakl"
+    # Corrigé 2026-09-08 : était classé Lever à tort (404) — en réalité sur Greenhouse,
+    # même slug "mirakl" (vérifié : 200, 15 offres).
+    ats: "greenhouse"
+    careers_url: "https://job-boards.greenhouse.io/mirakl"
+  - nom: "Algolia"
+    ats: "greenhouse"
+    careers_url: "https://boards.greenhouse.io/algolia"
+  - nom: "Payfit"
+    # Corrigé 2026-09-07 : plus sur Greenhouse (404), migré vers Teamtailor (vérifié via
+    # careers.payfit.com, footer "Applicant tracking system by Teamtailor"). Pas d'API
+    # publique équivalente Greenhouse/Lever/Ashby intégrée ici -> classé "autre".
+    ats: "autre"
+    careers_url: "https://careers.payfit.com/jobs"
+  - nom: "ManoMano"
+    # Corrigé 2026-09-08 : plus sur Greenhouse (404), migré vers Teamtailor (vérifié via
+    # careers.manomano.jobs). Pas d'API publique intégrée ici -> classé "autre".
+    ats: "autre"
+    careers_url: "https://careers.manomano.jobs/en-GB/jobs"
+  - nom: "Criteo"
+    # Corrigé 2026-09-07 : plus sur Greenhouse (404), migré vers Workday (vérifié via
+    # careers.criteo.com, URL de login criteo.wd3.myworkdayjobs.com). Pas d'API publique
+    # équivalente Greenhouse/Lever/Ashby intégrée ici -> classé "autre".
+    ats: "autre"
+    careers_url: "https://careers.criteo.com/en/jobs/"
+  - nom: "Strapi"
+    ats: "greenhouse"
+    careers_url: "https://boards.greenhouse.io/strapi"
+  - nom: "GitGuardian"
+    # Corrigé 2026-09-08 : plus sur Greenhouse (404), migré vers Teamtailor (vérifié via
+    # careers.gitguardian.com, footer "Career site by Teamtailor"). Pas d'API publique
+    # intégrée ici -> classé "autre".
+    ats: "autre"
+    careers_url: "https://careers.gitguardian.com"
+  - nom: "DentalMonitoring"
+    ats: "greenhouse"
+    careers_url: "https://boards.greenhouse.io/dentalmonitoring"
+  - nom: "Younited"
+    ats: "greenhouse"
+    careers_url: "https://boards.greenhouse.io/younitedcredit"
+
+  # Lever API
+  - nom: "Brevo"
+    # Corrigé 2026-09-08 : plus sur Greenhouse (404), réellement sur Lever (vérifié : 200, 19 offres).
+    ats: "lever"
+    careers_url: "https://jobs.lever.co/brevo"
+  - nom: "Meilisearch"
+    # Corrigé 2026-09-08 : plus sur Greenhouse (404), réellement sur Lever, board "meili" et
+    # non "meilisearch" (vérifié : 200, 1 offre).
+    ats: "lever"
+    careers_url: "https://jobs.lever.co/meili"
+  - nom: "Ekimetrics"
+    # Corrigé 2026-09-08 : plus sur Greenhouse (404), réellement sur Lever (vérifié : 200, 32 offres).
+    ats: "lever"
+    careers_url: "https://jobs.lever.co/ekimetrics"
+  - nom: "Pigment"
+    # Corrigé 2026-09-08 : plus sur Greenhouse (404), réellement sur Lever (vérifié : 200, 119 offres).
+    ats: "lever"
+    careers_url: "https://jobs.lever.co/pigment"
+  - nom: "Swile"
+    # Corrigé 2026-09-08 : plus sur Greenhouse (404), réellement sur Lever (vérifié : 200, 25 offres).
+    ats: "lever"
+    careers_url: "https://jobs.lever.co/swile"
+  - nom: "Contentsquare"
+    # Corrigé 2026-09-08 : plus sur Greenhouse (404), réellement sur Lever (vérifié : 200, 30 offres).
+    ats: "lever"
+    careers_url: "https://jobs.lever.co/contentsquare"
+  - nom: "BlaBlaCar"
+    # Corrigé 2026-09-07 : était classé Greenhouse (404) mais est réellement sur Lever —
+    # vérifié en interrogeant directement l'API (200, 10 offres réelles au moment du test).
+    ats: "lever"
+    careers_url: "https://jobs.lever.co/blablacar"
+  - nom: "Qonto"
+    ats: "lever"
+    careers_url: "https://jobs.lever.co/qonto"
+  - nom: "Pennylane"
+    # Corrigé 2026-09-08 : plus sur Lever (404), réellement sur Ashby (vérifié : 200, 146 offres).
+    ats: "ashby"
+    careers_url: "https://jobs.ashbyhq.com/pennylane"
+  - nom: "Spendesk"
+    # Corrigé 2026-09-08 : plus sur Lever (404), migré vers Teamtailor (vérifié via
+    # career.spendesk.com). Pas d'API publique intégrée ici -> classé "autre".
+    ats: "autre"
+    careers_url: "https://career.spendesk.com/jobs"
+  - nom: "Deezer"
+    # Corrigé 2026-09-08 : plus sur Lever (404), migré vers SmartRecruiters (vérifié via
+    # careers.smartrecruiters.com/Deezer). Pas d'API publique intégrée ici -> classé "autre".
+    ats: "autre"
+    careers_url: "https://careers.smartrecruiters.com/Deezer"
+  - nom: "Malt"
+    ats: "lever"
+    careers_url: "https://jobs.lever.co/malt"
+  - nom: "Lucca"
+    ats: "lever"
+    careers_url: "https://jobs.lever.co/lucca"
+  - nom: "Partoo"
+    ats: "lever"
+    careers_url: "https://jobs.lever.co/partoo"
+  - nom: "Skello"
+    ats: "lever"
+    careers_url: "https://jobs.lever.co/skello"
+  - nom: "PlayPlay"
+    ats: "lever"
+    careers_url: "https://jobs.lever.co/playplay"
+  - nom: "Sunday"
+    # Corrigé 2026-09-08 : plus sur Lever (404), migré vers Teamtailor (vérifié via
+    # careers.sundayapp.com/jobs). Pas d'API publique intégrée ici -> classé "autre".
+    ats: "autre"
+    careers_url: "https://careers.sundayapp.com/jobs"
+  - nom: "OpenClassrooms"
+    # Corrigé 2026-09-08 : plus sur Lever (404), réellement sur un board Getro (vérifié via
+    # jobs.openclassrooms.com). Pas d'API publique intégrée ici -> classé "autre".
+    ats: "autre"
+    careers_url: "https://jobs.openclassrooms.com/jobs"
+
+  # Ashby API
+  - nom: "Ledger"
+    # Corrigé 2026-09-08 : plus sur Greenhouse (404), réellement sur Ashby (vérifié : 200, 7 offres).
+    ats: "ashby"
+    careers_url: "https://jobs.ashbyhq.com/ledger"
+  - nom: "Back Market"
+    # Corrigé 2026-09-08 : plus sur Greenhouse (404), réellement sur Ashby (vérifié : 200, 21 offres).
+    ats: "ashby"
+    careers_url: "https://jobs.ashbyhq.com/backmarket"
+  - nom: "Alan"
+    # Corrigé 2026-09-08 : plus sur Greenhouse (404), réellement sur Ashby (vérifié : 200, 113 offres).
+    ats: "ashby"
+    careers_url: "https://jobs.ashbyhq.com/alan"
+  - nom: "Voodoo"
+    # Corrigé 2026-09-08 : plus sur Greenhouse (404), réellement sur Ashby (vérifié : 200, 104 offres).
+    ats: "ashby"
+    careers_url: "https://jobs.ashbyhq.com/voodoo"
+  - nom: "Mistral AI"
+    # Corrigé 2026-09-08 : mauvais slug (404) — le vrai est "mistral.ai" avec le point
+    # (vérifié : 200, 183 offres).
+    ats: "ashby"
+    careers_url: "https://jobs.ashbyhq.com/mistral.ai"
+  - nom: "Owkin"
+    # Corrigé 2026-09-08 : plus sur Greenhouse (404), réellement sur Ashby (vérifié : 200, 3 offres).
+    ats: "ashby"
+    careers_url: "https://jobs.ashbyhq.com/owkin"
+  - nom: "Dust"
+    ats: "ashby"
+    careers_url: "https://jobs.ashbyhq.com/dust"
+  - nom: "Photoroom"
+    ats: "ashby"
+    careers_url: "https://jobs.ashbyhq.com/photoroom"
+  - nom: "Poolside"
+    ats: "ashby"
+    careers_url: "https://jobs.ashbyhq.com/poolside"
+  - nom: "Gladia"
+    ats: "ashby"
+    careers_url: "https://jobs.ashbyhq.com/gladia"
+  - nom: "Giskard"
+    # Corrigé 2026-09-08 : plus sur Ashby (404), réellement sur Workable (vérifié via
+    # apply.workable.com/giskard). Pas d'API publique intégrée ici -> classé "autre".
+    ats: "autre"
+    careers_url: "https://apply.workable.com/giskard/"
+  - nom: "LightOn"
+    # Corrigé 2026-09-08 : plus sur Ashby (404), réellement sur Welcome to the Jungle
+    # (vérifié via lighton.ai/jobs). Pas d'API publique intégrée ici -> classé "autre".
+    ats: "autre"
+    careers_url: "https://www.welcometothejungle.com/fr/companies/lighton-1/jobs/"
+  - nom: "Nabla"
+    ats: "ashby"
+    careers_url: "https://jobs.ashbyhq.com/nabla"
+
+  # Teamtailor & Autres
+  - nom: "Deepki"
+    ats: "teamtailor"
+    careers_url: "https://careers.deepki.com/jobs"
+  - nom: "Cartelis"
+    ats: "autre"
+    careers_url: "https://hub.cartelis.com/recrutement/recrutement-positions-ouvertes"
+  - nom: "ChapsVision"
+    ats: "autre"
+    careers_url: "https://www.chapsvision.fr/carrieres/"
+  - nom: "Numberly"
+    ats: "autre"
+    careers_url: "https://numberly.com/fr/carrieres/"
+  - nom: "Sopra Steria"
+    ats: "autre"
+    careers_url: "https://www.soprasteria.fr/carrieres"
+
+# Domaines ATS génériques à balayer via recherche Google si aucune entreprise seed ne matche.
+ats_domaines:
+  - "jobs.lever.co"
+  - "boards.greenhouse.io"
+  - "api.ashbyhq.com"
+  - "teamtailor.com"
+  - "welcometothejungle.com"

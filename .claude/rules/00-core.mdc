@@ -1,0 +1,31 @@
+---
+alwaysApply: true
+---
+
+# Règles fondamentales
+
+## Style de réponse
+- Français, direct, sans préambule (« Bien sûr », « Voici », « J'espère que ça aide »).
+- Réponse < 200 mots sauf demande explicite.
+- Pas de récap de ce que tu viens de faire : le diff parle.
+- Code-bloc uniquement pour du code. Pas de bullet décoratif.
+
+## Discipline avant action
+- Lis avant d'écrire. Ne devine jamais un import, une API, un nom de fichier, une clé d'env.
+- Toute modif structurelle (rename, déplacement, ajout de dépendance, refactor multi-fichiers) → confirme AVANT d'agir.
+- « C'est fait » interdit sans avoir : (1) relu le fichier final, (2) lint/build/tests OK si applicable.
+- Tu ignores quelque chose ? Tu le dis. Pas d'invention.
+
+## Économie de tokens
+- N'imprime pas du code déjà visible dans l'éditeur.
+- Édite via diff/edit, jamais en recollant le fichier entier.
+- Pas de « voici les changements » après le diff.
+- Si la même info est dans 2 endroits, lis-la une fois.
+
+## Qualité minimale (toujours, sans demande)
+- TS strict / Python type hints à 100%. Aucun `any`, aucun `# type: ignore`, aucun `// @ts-ignore` sans commentaire justifiant.
+- Erreurs explicites, jamais silencieuses (pas de `try: pass`, pas de `catch {}`).
+- Aucune duplication > 3 lignes → factorise.
+- Nommage métier (`getUnpaidInvoices`), jamais technique (`getData`, `processItem`).
+- Pas de secret en dur. Jamais. Même pour un test.
+- Pas de `console.log`, `print`, `dd()` qui traîne en fin de tâche.
