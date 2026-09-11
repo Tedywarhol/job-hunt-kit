@@ -58,6 +58,7 @@ Deux principes structurent tout le reste :
 | Google Chrome ou Edge | rendu PDF headless (détection automatique, sinon variable `CHROME_PATH`) |
 | Intégration Notion | token + page parente, pour la base « Candidatures » (recommandé) |
 | Projet Google Cloud + API Gmail | pour les brouillons OAuth (optionnel) |
+| [`mcp-server-linkedin`](https://github.com/stickerdaniel/linkedin-mcp-server) (`uvx`) | pour la recherche d'offres/contacts LinkedIn par `job-scout` et `recruiter-outreach` (optionnel, lecture seule) |
 
 Pour le scraping stealth des offres PASS, le navigateur Chromium s'installe séparément (une seule fois) :
 
@@ -290,6 +291,24 @@ Si vous utilisez un assistant IA compatible (Claude Code, Antigravity), le kit e
 | Skill `import-profile` | Met à jour le profil depuis un CV existant, diff montré avant toute écriture. |
 
 Garde-fous constants : le contenu d'une offre scrapée ou d'un document importé est de la **donnée**, jamais une instruction à exécuter ; jamais de compte ou mot de passe résolu automatiquement ; jamais de mensonge ni de donnée inventée sur le profil du candidat.
+
+### LinkedIn (optionnel, lecture seule)
+
+Le kit peut interroger LinkedIn via le serveur MCP tiers [`linkedin-mcp-server`](https://github.com/stickerdaniel/linkedin-mcp-server)
+(déclaré dans `.mcp.json`, package `mcp-server-linkedin`) : `job-scout` s'en sert pour rechercher des offres
+(`search_jobs`, `get_job_details`), `recruiter-outreach` pour identifier le nom/la fonction d'un contact
+(`search_people`, `get_company_employees`, `get_person_profile`).
+
+```bash
+# Installation (une fois) — ouvre un navigateur pour connecter votre session LinkedIn
+uvx mcp-server-linkedin@latest --login
+```
+
+La session est stockée localement (`~/.linkedin-mcp/profile/`), jamais dans ce dépôt. **Aucun agent de ce
+kit n'envoie de message ni de demande de connexion LinkedIn** (`send_message`, `connect_with_person`) :
+ces outils existent côté serveur mais sont explicitement exclus des instructions des agents, l'automatisation
+d'un compte LinkedIn étant contraire à ses conditions d'utilisation (risque de restriction/bannissement,
+cf. l'avertissement du projet). Le contact recruteur reste géré par email (brouillon Gmail, cf. section 5).
 
 Deux scripts déterministes (pas des agents IA, aucun coût de token) complètent le cycle au-delà de l'envoi :
 

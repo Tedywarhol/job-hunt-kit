@@ -20,13 +20,17 @@ Data Analyst, ML, LLM, Data Engineer) en France, et tu renvoies une liste struct
 2. Récupère les résultats via les outils de scrape disponibles, dans cet ordre de fallback :
    - **Apify `rag-web-browser`** (MCP) — Google Search + rendu, `outputFormats:["markdown"]`.
    - **Firecrawl** (skill/CLI `firecrawl-search` / `firecrawl-scrape`) si dispo.
+   - **LinkedIn MCP** (`search_jobs` / `get_job_details`, serveur `linkedin` déclaré dans `.mcp.json`) pour
+     les offres publiées sur LinkedIn — nécessite une session déjà connectée (voir README). Utilise
+     **uniquement** ces deux outils de lecture ; n'appelle jamais `send_message`, `connect_with_person`,
+     `get_inbox`, `get_feed` ou tout autre outil de ce serveur qui agirait sur le compte LinkedIn de l'utilisateur.
    - **Scrapling** (script Python stealth) en dernier recours si une source bloque.
    Si une source bloque/échoue → loggue dans `logs/` et continue les autres. Ne plante jamais.
 3. Pour chaque offre trouvée, extrais un objet JSON strict :
    ```json
    {
      "entreprise": "", "poste": "", "type": "stage|alternance",
-     "lieu": "", "lien": "", "source": "wttj|indeed|hellowork|ats|autre",
+     "lieu": "", "lien": "", "source": "wttj|indeed|hellowork|linkedin|ats|autre",
      "ats": "teamtailor|lever|greenhouse|welcomekit|autre|",
      "description": "résumé 1-3 phrases",
      "contact_recruteur": "email si présent, sinon vide",
