@@ -24,6 +24,13 @@ Data Analyst, ML, LLM, Data Engineer) en France, et tu renvoies une liste struct
      les offres publiées sur LinkedIn — nécessite une session déjà connectée (voir README). Utilise
      **uniquement** ces deux outils de lecture ; n'appelle jamais `send_message`, `connect_with_person`,
      `get_inbox`, `get_feed` ou tout autre outil de ce serveur qui agirait sur le compte LinkedIn de l'utilisateur.
+     Pour chaque mot-clé de `mots_cles`, appelle `search_jobs` avec `location` = une entrée de
+     `localisations` et `date_posted: "past_24_hours"` (radar quotidien) ou `"past_week"` si le radar n'a
+     pas tourné depuis plus d'un jour. `max_pages: 1` ou `2` suffit (pas besoin d'épuiser les résultats
+     à chaque run, `state/seen.json` couvre déjà la déduplication dans le temps). Si le JSON retourné par
+     `get_job_details` contient un champ de type nombre de candidats/vues (ex. "candidats", "applicants"),
+     reporte-le dans `candidats_estimes` de l'offre ; **ne l'invente jamais** s'il est absent — ce n'est
+     pas un champ garanti par cet outil.
    - **Scrapling** (script Python stealth) en dernier recours si une source bloque.
    Si une source bloque/échoue → loggue dans `logs/` et continue les autres. Ne plante jamais.
 3. Pour chaque offre trouvée, extrais un objet JSON strict :
@@ -34,7 +41,8 @@ Data Analyst, ML, LLM, Data Engineer) en France, et tu renvoies une liste struct
      "ats": "teamtailor|lever|greenhouse|welcomekit|autre|",
      "description": "résumé 1-3 phrases",
      "contact_recruteur": "email si présent, sinon vide",
-     "date_publication": "ISO si connue, sinon vide"
+     "date_publication": "ISO si connue, sinon vide",
+     "candidats_estimes": "nombre si exposé par la source, sinon absent (ne jamais inventer)"
    }
    ```
 4. Filtre : type ∈ {stage, alternance}, domaine data/IA plausible, âge ≤ `max_age_jours`.

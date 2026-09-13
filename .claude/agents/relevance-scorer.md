@@ -28,6 +28,10 @@ Après le score de fond, ajoute le `bonus_autonomie` (config) selon l'ATS de l'o
 wttj/linkedin/indeed = login → +0). Plafonne le score à 100. Renseigne aussi `autonomie`
 (auto|captcha|login) pour que l'apply-routine trie les offres autonomes en premier.
 
+## Bonus concurrence (uniquement si `candidats_estimes` est présent sur l'offre)
+Si le champ `candidats_estimes` existe (job-scout ne le renseigne que si la source l'a réellement
+exposé) : `< 20` → +3, `20-50` → +1, au-delà → +0. Absent → aucun bonus, ne suppose jamais une valeur.
+
 ## Sortie
 Pour chaque offre, ajoute les champs :
 ```json
