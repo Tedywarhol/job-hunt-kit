@@ -304,11 +304,19 @@ Le kit peut interroger LinkedIn via le serveur MCP tiers [`linkedin-mcp-server`]
 uvx mcp-server-linkedin@latest --login
 ```
 
-La session est stockée localement (`~/.linkedin-mcp/profile/`), jamais dans ce dépôt. **Aucun agent de ce
-kit n'envoie de message ni de demande de connexion LinkedIn** (`send_message`, `connect_with_person`) :
-ces outils existent côté serveur mais sont explicitement exclus des instructions des agents, l'automatisation
-d'un compte LinkedIn étant contraire à ses conditions d'utilisation (risque de restriction/bannissement,
-cf. l'avertissement du projet). Le contact recruteur reste géré par email (brouillon Gmail, cf. section 5).
+La session est stockée localement (`~/.linkedin-mcp/profile/`), jamais dans ce dépôt.
+
+**Contact LinkedIn (`connect_with_person` / `send_message`) : désactivé par défaut.** Ces outils
+existent côté serveur mais l'automatisation d'un compte LinkedIn est contraire à ses conditions
+d'utilisation et expose à un risque réel de restriction ou de bannissement du compte (cf. avertissement
+du projet source). Ils ne sont donc utilisés par `recruiter-outreach` que si vous passez `actif: true`
+dans `config/linkedin-outreach.json` — décision explicite, à votre charge et à vos risques. Même activé :
+- une seule action par recruiter (jamais de relance LinkedIn, celles-ci restent par email),
+- plafonds quotidien/hebdomadaire configurables (`config/linkedin-outreach.json`),
+- confirmation explicite du texte avant chaque envoi (jamais d'envoi automatique en boucle).
+
+Modèles dans `config/linkedin-outreach-templates.md`. Le contact recruteur par email (brouillon Gmail,
+cf. section 5) reste le canal principal dans tous les cas.
 
 Deux scripts déterministes (pas des agents IA, aucun coût de token) complètent le cycle au-delà de l'envoi :
 
