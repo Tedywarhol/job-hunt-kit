@@ -61,10 +61,12 @@ EXCLUDE_PATTERNS: List[str] = [
     # projet — référence gstack, un tracker "Propulse V2" et des défauts Next.js/Supabase
     # sans rapport avec ce kit Python. Découvert le 2026-09-08 : partagerait des règles
     # incohérentes/déroutantes avec le projet reçu par un tiers. Seules les règles
-    # réellement génériques restent (00-core, audit sécurité, quality-gate, context7-docs).
+    # réellement génériques restent (00-core, audit sécurité, quality-gate, context7-docs,
+    # computer-use-files, session-start — ce dernier retiré de cette liste le 2026-09-14 :
+    # son contenu réel est spécifique au Job-Hunt Kit, pas au framework personnel, cf.
+    # CLAUDE.md § Conventions).
     ".claude/rules/00-dispatcher-skills.mdc",
     ".claude/rules/01-skill-router.mdc",
-    ".claude/rules/10-session-start.mdc",
     ".claude/rules/20-ecriture-multiagents.mdc",
     ".claude/rules/20-new-project.mdc",
     ".claude/rules/30-new-feature.mdc",

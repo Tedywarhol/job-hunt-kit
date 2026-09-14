@@ -32,7 +32,6 @@ def test_is_excluded_rules() -> None:
     # projet Python (gstack, tracker "Propulse V2", défauts Next.js/Supabase).
     assert is_excluded(".claude/rules/00-dispatcher-skills.mdc")
     assert is_excluded(".claude/rules/01-skill-router.mdc")
-    assert is_excluded(".claude/rules/10-session-start.mdc")
     assert is_excluded(".claude/rules/20-ecriture-multiagents.mdc")
     assert is_excluded(".claude/rules/20-new-project.mdc")
     assert is_excluded(".claude/rules/30-new-feature.mdc")
@@ -41,6 +40,10 @@ def test_is_excluded_rules() -> None:
     assert not is_excluded(".claude/rules/10-audit-qualite-securite.mdc")
     assert not is_excluded(".claude/rules/40-quality-gate.mdc")
     assert not is_excluded(".claude/rules/context7-docs.mdc")
+    assert not is_excluded(".claude/rules/11-computer-use-files.mdc")
+    # Recatégorisé le 2026-09-14 : contenu réel spécifique au Job-Hunt Kit malgré son nom,
+    # pas le framework personnel (cf. CLAUDE.md § Conventions).
+    assert not is_excluded(".claude/rules/10-session-start.mdc")
 
     # Fichiers autorisés dans le kit
     assert not is_excluded("scripts/init.py")
