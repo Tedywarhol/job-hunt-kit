@@ -5,7 +5,7 @@ Exclut strictement :
 - Tous les secrets (config/.notion_token, config/credentials.json, config/gmail_token.json, .env)
 - Les dossiers de runtime (outputs/, logs/, state/ [sauf .gitkeep])
 - Les caches et fichiers locaux (__pycache__, .claude/settings.local.json, .zcode/, etc.)
-- Les données personnelles dans cv-data.json / notion.json (remplacés par les .template)
+- Les données personnelles dans cv-data.json / cv-data.en.json / notion.json (remplacés par les .template)
 - Les artefacts personnels/datés non génériques : index.html (page statique non paramétrée),
   docs/plans/2026-09-07-*.md (audit daté), config/apply-routine-schedule-prompt.md (routine
   liée au compte de l'utilisateur) — cf. décision du 2026-09-08.
@@ -144,6 +144,14 @@ def build_kit_zip(output_path: Optional[str] = None) -> str:
                     if os.path.isfile(template_cv):
                         zipf.write(template_cv, arcname="templates/cv/cv-data.json")
                         included_files.append("templates/cv/cv-data.json (depuis cv-data.template.json)")
+                    continue
+
+                # templates/cv/cv-data.en.json -> remplacer par templates/cv/cv-data.en.template.json
+                if rel_norm == "templates/cv/cv-data.en.json":
+                    template_cv_en = os.path.join(ROOT, "templates", "cv", "cv-data.en.template.json")
+                    if os.path.isfile(template_cv_en):
+                        zipf.write(template_cv_en, arcname="templates/cv/cv-data.en.json")
+                        included_files.append("templates/cv/cv-data.en.json (depuis cv-data.en.template.json)")
                     continue
 
                 zipf.write(abs_path, arcname=rel_path)

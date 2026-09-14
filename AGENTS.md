@@ -43,13 +43,13 @@ Options disponibles :
 - `--notion-token <token>` & `--notion-page-url <url>` : configure et crée automatiquement la base Notion "Candidatures".
 - `--non-interactive` : exécution non-interactive (batch / CI).
 - `python hunt.py kit` : produit l'archive `job-hunt-kit_<date>.zip` nettoyée de tout secret pour le partage.
-- `python hunt.py test` : exécute la suite de tests automatisée (134 tests unitaires & intégration).
+- `python hunt.py test` : exécute la suite de tests automatisée (143 tests unitaires & intégration).
 - `python hunt.py stats` : affiche le tableau de bord analytique de recherche et suivi des relances.
 
 ## Layout
 
 - `hunt.py` — CLI unifiée du workspace (`init`, `apply`, `open`, `cv`, `lettre`, `scan`, `notion`, `draft`, `stats`, `status`, `kit`, `test`).
-- `tests/` — Suite de tests automatisée pytest (134 tests) :
+- `tests/` — Suite de tests automatisée pytest (143 tests) :
   - `test_ats_connectors.py` — Tests des parsers Greenhouse/Lever/Ashby, normalisation des dates ISO/Unix/FR, bonus de récence et filtres de pertinence (fonctions hors-scope, langue étrangère).
   - `test_dashboard.py` — Tests des indicateurs de fraîcheur, entonnoir de conversion, suivi CRM et statut réel Notion.
   - `test_profile.py` — Tests d'identité, nommage de fichiers, villes et dates en français.
@@ -65,6 +65,8 @@ Options disponibles :
   - `test_companies_yaml_check.py` — Tests du diagnostic `companies.yaml`.
   - `test_response_rates.py` — Tests de l'analyse rétroactive du taux de réponse.
   - `test_extract_document_text.py` — Tests d'extraction de texte (PDF/DOCX/TXT/MD) pour l'import de profil.
+  - `test_create_gmail_draft.py` — Tests de `find_reply` (détection de réponse multi-adresses, dont le cas réel Nolwenn Jezequel en dur).
+  - `test_requirements.py` — Tests de non-régression des dépendances (`scrapling[fetchers]`, `python-docx`).
 - `scripts/` — Python pipeline :
   - `init.py` — Orchestrateur d'initialisation et configuration interactive du Job-Hunt Kit.
   - `init_notion_db.py` — Création automatique de la base Notion avec 15 colonnes via l'API REST.
@@ -86,6 +88,7 @@ Options disponibles :
   - `create_gmail_draft.py` / `auth_gmail.py` / `generate_alternance_drafts.py` — Création de brouillons Gmail OAuth avec CV PDF joint ; `create_gmail_draft.py::find_reply` détecte les réponses recruteur.
   - `scrape_scrapling.py` / `scrape_pass.py` / `enrich_pass_offers.py` — Scrapers stealth (Scrapling) pour le web et la plateforme PASS.
   - `filter_alternance_pass.py` / `export_pass_csv.py` / `summary_pass.py` — Traitement, scoring de récence et export des offres PASS.
+  - `expire_stale_offers.py` — Écarte automatiquement les offres Notion « À traiter » périmées (> 15 jours par défaut, `--max-age-jours`, `--dry-run` disponible) ; appelé à chaque `hunt.py scan`, ne touche jamais les statuts engagés.
   - `notion_apply.py` / `push_notion.py` / `push_pass_to_notion.py` — Synchronisation API Notion REST (`push_notion.py` porte les helpers partagés : pagination, lecture de propriétés, recherche par entreprise+poste).
   - `deprecated/radar_run.py` — Ancien radar ATS, mis à l'écart le 2026-09-07 (doublon divergent de `scrape_ats_api.py`, cf. `docs/plans/2026-09-07-plan-amelioration.md` M0). Conservé pour référence, ne pas réintégrer.
 - `templates/cv/` — `cv-data.template.json` (squelette modèle), `cv-data.json` (contenu maître local), `cv.css` (Design System Navy/Slate A4 thémable), `themes/` (navy, emerald, bordeaux).

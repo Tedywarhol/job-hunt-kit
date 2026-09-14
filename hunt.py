@@ -384,14 +384,16 @@ def cmd_scan(args: Optional[argparse.Namespace] = None) -> int:
     if args and getattr(args, "all", False):
         scan_ats = True
         scan_pass = True
+    skip_expire = getattr(args, "no_expire", False) if args else False
 
+    rc_final = 0
     if scan_ats:
         print("\nInterrogation des API publiques ATS (Greenhouse, Lever, Ashby)...")
         rc_ats = run_script("scrape_ats_api.py", [])
         if rc_ats != 0 and not scan_pass:
-            return rc_ats
+            rc_final = rc_ats
 
-    if scan_pass:
+    if scan_pass and rc_final == 0:
         print("\nDemarrage de la veille PASS (Fonction Publique)...")
         rc = run_script("scrape_pass.py", [])
         if rc != 0:
@@ -401,9 +403,15 @@ def cmd_scan(args: Optional[argparse.Namespace] = None) -> int:
         if rc != 0:
             return rc
         print("\nFiltrage et notation des opportunites...")
-        return run_script("filter_alternance_pass.py", [])
+        rc_final = run_script("filter_alternance_pass.py", [])
 
-    return 0
+    # Nettoyage Notion : écarte les offres "À traiter" de plus de 15 jours (jamais les
+    # candidatures déjà engagées). Best-effort — ne fait jamais échouer le scan.
+    if not skip_expire:
+        print("\nNettoyage des offres 'A traiter' perimees dans Notion...")
+        run_script("expire_stale_offers.py", [])
+
+    return rc_final
 
 
 def cmd_notion(args: argparse.Namespace) -> int:
@@ -774,6 +782,7 @@ def main() -> None:
     p_scan.add_argument("--ats", action="store_true", help="Scraper uniquement les API d'ATS (Greenhouse, Lever, Ashby)")
     p_scan.add_argument("--pass", dest="pass_source", action="store_true", help="Scraper uniquement la plateforme PASS")
     p_scan.add_argument("--all", action="store_true", help="Scraper toutes les sources")
+    p_scan.add_argument("--no-expire", action="store_true", help="Ne pas ecarter les offres 'A traiter' perimees dans Notion")
 
     # notion
     p_notion = subparsers.add_parser("notion", aliases=["db"], help="Gerer la base Notion")

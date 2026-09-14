@@ -17,6 +17,7 @@ config/apply-routine-schedule-prompt.md
 docs/plans/2026-09-07-analyse-existant.md
 docs/plans/2026-09-07-plan-amelioration.md
 templates/cv/cv-data.json
+templates/cv/cv-data.en.json
 
 # Config locale réécrite par init.py (le kit contient les .template)
 config/notion.json

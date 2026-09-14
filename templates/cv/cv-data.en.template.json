@@ -1,0 +1,274 @@
+{
+  "personal": {
+    "nom": "Prénom NOM",
+    "prenom": "Prénom",
+    "nom_famille": "NOM",
+    "telephone": "+33 6 00 00 00 00",
+    "email": "vous@example.com",
+    "localisation": "Paris, France",
+    "linkedin": "Prénom NOM",
+    "linkedin_url": "https://www.linkedin.com/in/votre-profil/",
+    "github_url": "https://github.com/votre-profil"
+  },
+  "badge_titre": "Data & AI Engineer",
+  "profil_resume": "Engineering student in Data Science & AI (Bachelor's + 4 years), I design and deploy tailored artificial intelligence solutions integrating large language models (LLMs), RAG architectures and autonomous agents. My expertise combines building robust data pipelines (Python, SQL, ETL), predictive modeling (Machine Learning) and decision-support reporting (Power BI), with a constant focus on rigor, performance and business impact.",
+  "profiles": {
+    "alternance": {
+      "titre_defaut": "Work-Study Program (Apprenticeship) - Data Science & AI",
+      "target_tags": [
+        {
+          "icon": "far fa-calendar-alt",
+          "text": "24 months from Sep. 2026"
+        },
+        {
+          "icon": "fas fa-sync-alt",
+          "text": "3 wks company / 3 wks school"
+        },
+        {
+          "icon": "fas fa-map-marker-alt",
+          "text": "Paris Region / France"
+        }
+      ],
+      "disponibilite": [
+        "Apprenticeship contract - 24 months",
+        "Schedule: 3 wks company / 3 wks school",
+        "Available from September 2026"
+      ],
+      "formation": [
+        {
+          "periode": "2026 - 2028",
+          "intitule": "Engineering Degree - Data Science & AI",
+          "etablissement": "ECE Paris",
+          "lieu": "Paris, France",
+          "detail": "Specialization in Artificial Intelligence, Machine Learning & Big Data"
+        },
+        {
+          "periode": "2025 - 2026",
+          "intitule": "Engineering Degree - Digital Sciences",
+          "etablissement": "CESI Graduate School of Engineering",
+          "lieu": "Nanterre, France",
+          "detail": "Major in Data & Information Systems"
+        },
+        {
+          "periode": "2023 - 2025",
+          "intitule": "Preparatory Classes MPSI (Maths, Physics, Engineering Sciences)",
+          "etablissement": "Prepas Internationales",
+          "lieu": "Yaounde, Cameroon",
+          "detail": "Intensive training in advanced mathematics, algorithmics and physics"
+        },
+        {
+          "periode": "2023",
+          "intitule": "Scientific Baccalaureate (S)",
+          "etablissement": "Lycee General",
+          "lieu": "Yaounde, Cameroon",
+          "detail": "Highest Honors - Mathematics & Physical Sciences track"
+        }
+      ]
+    }
+  },
+  "competences_cles": [
+    "Generative AI (GenAI), RAG & autonomous LLM agents",
+    "Automation & orchestration (n8n, MCP, sub-agents)",
+    "Machine Learning & predictive modeling (Scikit-learn, XGBoost)",
+    "Decision-support architectures & Big Data (ETL, Data Warehouse, SQL)"
+  ],
+  "outils": {
+    "AI & GenAI": [
+      "OpenAI",
+      "Anthropic (Claude)",
+      "RAG",
+      "MCP",
+      "Hugging Face",
+      "Cursor",
+      "Claude Code",
+      "Lovable"
+    ],
+    "Machine Learning": [
+      "Scikit-learn",
+      "XGBoost",
+      "TensorFlow",
+      "Pandas",
+      "NumPy"
+    ],
+    "Data & BI": [
+      "SQL",
+      "PostgreSQL",
+      "Power BI",
+      "Excel",
+      "Talend",
+      "Hive",
+      "Spark"
+    ],
+    "Dev. & DevOps": [
+      "FastAPI",
+      "Streamlit",
+      "React",
+      "Docker",
+      "Git",
+      "GitHub",
+      "n8n",
+      "Firecrawl"
+    ],
+    "Languages": [
+      "Python",
+      "SQL",
+      "R",
+      "Java",
+      "C"
+    ]
+  },
+  "savoir_etre": [
+    "Analytical rigor - Technical curiosity",
+    "Problem solving - Versatility",
+    "Teamwork - Proactive mindset"
+  ],
+  "langues": [
+    {
+      "langue": "French",
+      "niveau": "Native"
+    },
+    {
+      "langue": "English",
+      "niveau": "Professional working proficiency (B2)"
+    }
+  ],
+  "certifications": [
+    "IBM Data Science Professional Certificate",
+    "Machine Learning Specialization (Coursera / Stanford)"
+  ],
+  "interets": [
+    "Kaggle competitions",
+    "AI & Open Source watch",
+    "High-tech & Robotics"
+  ],
+  "experiences": [
+    {
+      "intitule": "AI Engineer & Full Stack Developer",
+      "entreprise": "NGUESSON Company",
+      "lieu": "Paris, France",
+      "periode": "Jan. - Apr. 2026",
+      "points": [
+        "Designed and deployed an end-to-end RAG architecture leveraging the OpenAI and Anthropic APIs to turn heterogeneous documents (PDF, Word, OCR) into interactive AI assistants.",
+        "Implemented anti-hallucination safeguards, explainability mechanisms and continuous evaluation of answer accuracy.",
+        "Built a Streamlit / React interface connected to a Python API (FastAPI) and a secured PostgreSQL database.",
+        "Result: Delivered an operational SaaS platform cutting critical information retrieval time by 70%."
+      ],
+      "tags": [
+        "genai",
+        "rag",
+        "llm",
+        "python",
+        "fastapi",
+        "openai",
+        "anthropic",
+        "postgresql"
+      ]
+    },
+    {
+      "intitule": "Business Analyst - BI & Dashboards",
+      "entreprise": "CANAL+",
+      "lieu": "Yaounde, Cameroon",
+      "periode": "May - Sep. 2025",
+      "points": [
+        "Explored and modeled commercial databases with SQL and Power Query to analyze purchasing behavior and customer satisfaction.",
+        "Designed interactive Power BI dashboards integrating real-time data feeds to monitor sales KPIs and detect anomalies.",
+        "Structured and improved the reliability of reporting processes for the marketing team and senior management.",
+        "Result: Strategic recommendations that optimized commercial campaigns and improved resource allocation."
+      ],
+      "tags": [
+        "bi",
+        "sql",
+        "powerbi",
+        "dashboard",
+        "analysis",
+        "kpi"
+      ]
+    },
+    {
+      "intitule": "Data Analyst",
+      "entreprise": "CALY WOOD INDUSTRY",
+      "lieu": "Yaounde, Cameroon",
+      "periode": "Jun. - Sep. 2024",
+      "points": [
+        "Industrialized an automated ETL pipeline in Python (Pandas / NumPy) to consolidate and clean multi-source data feeds (CSV, JSON, Excel).",
+        "Modeled production costs and profitability by product line, reported through Power BI to guide pricing strategy.",
+        "Result: Identified profitability levers that drove a 15% margin increase on targeted product lines."
+      ],
+      "tags": [
+        "python",
+        "pandas",
+        "etl",
+        "powerbi",
+        "data-analysis",
+        "profitability"
+      ]
+    }
+  ],
+  "projets": [
+    {
+      "titre": "Hospital Big Data Architecture (University Hospital)",
+      "stack": "Talend - Hive - Data Warehouse - PostgreSQL - Power BI",
+      "points": [
+        "Implemented a 3-layer data architecture (Bronze, Silver, Gold) with Talend and Hive to centralize several terabytes of healthcare data.",
+        "Designed distributed ETL pipelines with partitioning while strictly enforcing data confidentiality (GDPR governance).",
+        "Deployed Power BI dashboards connected to the Gold layer for medico-economic steering of hospital departments.",
+        "Result: Unified 360-degree view and a significant reduction in the time needed to produce strategic indicators."
+      ],
+      "tags": [
+        "bigdata",
+        "etl",
+        "talend",
+        "hive",
+        "powerbi",
+        "datawarehouse",
+        "healthcare"
+      ]
+    },
+    {
+      "titre": "HR Analytics - Predictive Turnover Modeling",
+      "stack": "Python - Scikit-learn - XGBoost - AI Governance",
+      "points": [
+        "Consolidated 4 HR data sources (4,410 employees), advanced feature engineering and anomaly detection.",
+        "Trained supervised Machine Learning models (Random Forest, XGBoost) to predict attrition risk (AUC = 0.92, F1-Score = 0.88).",
+        "Integrated AI Act principles (SHAP explainability, algorithmic fairness and non-discrimination).",
+        "Result: Presented findings to the executive committee with an action plan projecting a 15% reduction in turnover."
+      ],
+      "tags": [
+        "ml",
+        "xgboost",
+        "scikit-learn",
+        "python",
+        "predictive",
+        "hr"
+      ]
+    },
+    {
+      "titre": "AI Assistant Connected to an Industrial PLM",
+      "stack": "Python - OpenAI API - Streamlit - Aras Innovator",
+      "points": [
+        "Built an intelligent agent translating natural-language queries into SQL/XML queries against the Aras Innovator PLM.",
+        "Delivered an interactive Streamlit web interface for instant queries on bills of materials and technical history.",
+        "Result: Instant access to documentation with no prior database query skills required."
+      ],
+      "tags": [
+        "genai",
+        "agent",
+        "llm",
+        "openai",
+        "streamlit",
+        "plm"
+      ]
+    }
+  ],
+  "variables_defaut": {
+    "accroche": "",
+    "competences_ordre": [],
+    "projets_selection": [
+      "Hospital Big Data Architecture (University Hospital)",
+      "HR Analytics - Predictive Turnover Modeling",
+      "AI Assistant Connected to an Industrial PLM"
+    ],
+    "projets_max": 3,
+    "mots_cles_ats": []
+  }
+}

@@ -115,6 +115,33 @@ def test_process_entry_gmail_failure_is_never_silent(mock_find_reply: mock.Magic
 
 
 @mock.patch("run_followups.find_reply")
+def test_process_entry_passes_known_alias_to_find_reply(mock_find_reply: mock.MagicMock) -> None:
+    """Régression 2026-09-14 : quand email_alias_connue est renseignée, elle doit être
+    cherchée en plus de l'adresse enregistrée (cf. tests/test_create_gmail_draft.py)."""
+    mock_find_reply.return_value = None
+    entry = _entry(
+        etape="J+0", jours_ecoules=1,
+        email="nolwenn.jezequel@mer.gouv.fr",
+        email_alias_connue="nolwenn.jezequel@developpement-durable.gouv.fr",
+    )
+    process_entry(entry, service=mock.MagicMock(), token=None, db_id=None, apply_changes=True)
+    emails_checked = mock_find_reply.call_args[0][1]
+    assert set(emails_checked) == {
+        "nolwenn.jezequel@mer.gouv.fr",
+        "nolwenn.jezequel@developpement-durable.gouv.fr",
+    }
+
+
+@mock.patch("run_followups.find_reply")
+def test_process_entry_without_alias_checks_single_email(mock_find_reply: mock.MagicMock) -> None:
+    """Cas nominal (pas d'alias connu) : pas de régression, une seule adresse cherchée."""
+    mock_find_reply.return_value = None
+    entry = _entry(etape="J+0", jours_ecoules=1)  # pas de email_alias_connue
+    process_entry(entry, service=mock.MagicMock(), token=None, db_id=None, apply_changes=True)
+    assert mock_find_reply.call_args[0][1] == ["recruteur@exemple.fr"]
+
+
+@mock.patch("run_followups.find_reply")
 def test_process_entry_closes_after_j10(mock_find_reply: mock.MagicMock) -> None:
     mock_find_reply.return_value = None
     entry = _entry(etape="J+10", jours_ecoules=20)

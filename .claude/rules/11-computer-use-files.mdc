@@ -1,0 +1,46 @@
+---
+description: Définit la procédure obligatoire pour permettre à l'outil computer-use de joindre des fichiers locaux via la boîte de dialogue native de Windows.
+globs: 
+alwaysApply: true
+---
+
+# Computer-Use : Upload de Fichiers sous Windows
+
+## 1. Objectif
+
+Permettre à l'agent utilisant le serveur MCP **Windows-MCP** (`mcp__windows-mcp__*`, remplace depuis le 2026-09-11 le script maison `scripts/mcp_computer_use.py` — voir historique du fichier) ou le fallback `mcp__claude-in-chrome` de contourner l'absence d'accès direct au DOM pour uploader un fichier (ex: CV, Lettre de motivation) sur un formulaire ATS. Windows-MCP tourne sur le système hôte Windows de l'utilisateur avec accès complet (UIAutomation) : l'upload de fichier implique d'interagir avec la boîte de dialogue native de sélection de fichier de Windows.
+
+Windows-MCP expose des outils séparés par action (contrairement à l'ancien `computer_use` à paramètre `action` unique) : `Click`, `Type`, `Shortcut`, `Screenshot`, `Snapshot`, `WaitFor`, entre autres. Vérifie le schéma exact de chaque outil via `ToolSearch` (`select:Click,Type,Shortcut,Screenshot,Snapshot,WaitFor`) avant de les appeler — les noms de paramètres ci-dessous sont indicatifs, pas garantis figés entre versions du paquet `windows-mcp`.
+
+## 2. Déclencheurs (quand appliquer cette règle)
+
+Applique cette règle dès que :
+- Un outil `mcp__windows-mcp__*` est utilisé pour remplir un formulaire de candidature.
+- L'agent doit cliquer sur un bouton "Upload", "Joindre un CV", "Choose File", etc.
+- Le flux de candidature requiert un document généré localement (généralement dans `outputs/<slug>/`).
+
+## 3. Procédure d'Upload (obligatoire, dans l'ordre)
+
+1. **Identifier le fichier cible** :
+   - Détermine le chemin **absolu** exact du fichier généré sur la machine (ex: `%USERPROFILE%\Documents\job-hunt-kit\outputs\<slug>\CV_Prenom_NOM.pdf`). Utilise tes outils locaux (`Glob`, `Bash`, ou `PowerShell`) pour lister le dossier de sortie (`outputs/<slug>/`) si le nom du fichier n'est pas connu à l'avance.
+
+2. **Ouvrir la boîte de dialogue** :
+   - Utilise `Click` sur le bouton d'upload de la page web (coordonnées obtenues via `Snapshot`, préférable à un `Screenshot` brut car il donne les régions/éléments avec leurs IDs).
+   - Patiente quelques secondes (`WaitFor` sur la fenêtre active, ou à défaut un court `Wait`) puis reprends un `Snapshot`/`Screenshot` pour t'assurer que la fenêtre modale Windows "Ouvrir" (File Picker) est bien apparue au premier plan.
+
+3. **Saisir le chemin d'accès** :
+   - Par défaut sous Windows, le champ "Nom du fichier" (File name) obtient automatiquement le focus à l'ouverture de la boîte de dialogue.
+   - Utilise `Type` pour écrire le **chemin absolu complet** du fichier directement dans ce champ. (Attention aux antislashs `\` propres à Windows).
+
+4. **Valider la sélection** :
+   - Utilise `Shortcut` avec `Enter` pour valider la boîte de dialogue.
+
+5. **Vérification finale** :
+   - Reprends un `Snapshot`/`Screenshot` pour vérifier que la boîte de dialogue s'est bien fermée et que le nom du fichier apparaît désormais sur la page web du formulaire (confirmant ainsi que le fichier est bien joint).
+
+## 4. Garde-fous
+
+- **Pas d'upload direct via le DOM** : ces outils ne peuvent pas injecter un fichier dans l'input `<input type="file">` par le code (contrairement au MCP Playwright, à préférer quand disponible — cf. `form-filler.md`). Tu dois impérativement passer par l'interface graphique.
+- **Ne jamais deviner le nom du fichier** : Les noms de fichiers PDF (CV/Lettre) générés contiennent le prénom et le nom de l'utilisateur. Vérifie toujours l'existence et l'orthographe du fichier cible via l'explorateur ou une commande listant le répertoire avant d'essayer de l'uploader.
+- Si le champ "Nom du fichier" n'a pas le focus par défaut, utilise `Click` sur le champ texte de la fenêtre Windows avant `Type`.
+- **Périmètre** : Windows-MCP est installé ici sans restriction d'outils (`WINDOWS_MCP_TOOLS`/`WINDOWS_MCP_EXCLUDE_TOOLS` non définis) — il expose aussi `PowerShell`, `Registry`, `FileSystem`, `Process`, `Clipboard` avec accès système complet. Cette règle ne couvre QUE l'upload de fichier via file picker ; n'utilise pas ces outils annexes pour autre chose sans instruction explicite de l'utilisateur (aucune commande destructrice, aucune modification du Registre, aucun arrêt de process hors de ce périmètre).

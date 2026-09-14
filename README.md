@@ -104,7 +104,7 @@ Choix [0-8] :
 | Brouillons Gmail | `python hunt.py draft --top 5` | Prépare les emails avec CV joint dans vos brouillons. |
 | Diagnostic | `python hunt.py status` | Vérifie Chrome, Notion et Gmail. |
 | Import de profil | `python hunt.py profile import <fichier>` | Extrait le texte d'un CV existant (PDF, DOCX, TXT, MD). |
-| Tests | `python hunt.py test` | Exécute la suite automatisée (134 tests). |
+| Tests | `python hunt.py test` | Exécute la suite automatisée (143 tests). |
 | Pack de partage | `python hunt.py kit` | Génère un zip propre, sans secrets. |
 
 ## Le design system du CV
@@ -268,7 +268,7 @@ job-hunt-kit/
 ├── templates/
 │   ├── cv/                  cv-data.template.json, cv.css, thèmes navy/emerald/bordeaux
 │   └── lettre/              lettre.css (mise en page corporative coordonnée)
-├── tests/                   Suite pytest (134 tests)
+├── tests/                   Suite pytest (143 tests)
 ├── docs/                    Guides de rédaction et plans d'évolution
 ├── outputs/                 Un dossier par candidature (généré à l'usage, non versionné)
 ├── state/                   Cache et tracking (généré à l'usage, non versionné)

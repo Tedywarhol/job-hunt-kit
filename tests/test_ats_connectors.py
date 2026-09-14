@@ -1,4 +1,5 @@
 """Tests unitaires pour les connecteurs API ATS (Greenhouse, Lever, Ashby)."""
+from datetime import date, timedelta
 from typing import Any, Dict, List
 import unittest.mock as mock
 
@@ -155,16 +156,21 @@ def test_calculate_recency_score() -> None:
 def test_score_pass_offer() -> None:
     from filter_alternance_pass import score_pass_offer
 
+    # Date relative à "aujourd'hui" (pas une date figée) : une chaîne codée en dur
+    # devient périmée dès que le nombre de jours réels écoulés dépasse le seuil testé
+    # (constaté : "2026-08-30" a fait échouer ce test 15 jours plus tard, alors que
+    # le code lui-même n'avait pas régressé).
+    recent_date = date.today() - timedelta(days=3)
     offer = {
         "titre": "Chef de projet IA et Data Science",
         "description_poste": "Développement de pipelines Python et modèles de Machine Learning.",
         "profil_recherche": "Maîtrise de SQL et Power BI.",
         "duree_contrat": "24 mois",
-        "date_publication": "2026-08-30",
+        "date_publication": recent_date.isoformat(),
     }
     score, notes, is_24, date_iso, age_days = score_pass_offer(offer)
     assert score >= 85
     assert is_24 is True
-    assert date_iso == "2026-08-30"
+    assert date_iso == recent_date.isoformat()
     assert age_days <= 10
 

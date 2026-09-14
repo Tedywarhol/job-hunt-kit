@@ -24,7 +24,7 @@ from email.mime.text import MIMEText
 import os
 import sys
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 ROOT: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
@@ -113,8 +113,16 @@ def create_draft(
     return draft
 
 
-def find_reply(service: Any, from_email: str, since_iso: str) -> Optional[str]:
-    """Cherche un message reçu de `from_email` depuis `since_iso` (YYYY-MM-DD).
+def find_reply(service: Any, from_emails: Union[str, List[str]], since_iso: str) -> Optional[str]:
+    """Cherche un message reçu de l'une des adresses `from_emails` depuis `since_iso` (YYYY-MM-DD).
+
+    Accepte une adresse unique ou une liste (ex. adresse enregistrée + alias de domaine
+    connu, cf. `email_alias_connue` dans state/outreach.json) : un recruteur peut répondre
+    depuis un domaine différent de celui enregistré au moment de la candidature (ex.
+    administrations avec plusieurs domaines @gouv.fr) — bug réel constaté le 2026-09-14
+    (refus reçu depuis developpement-durable.gouv.fr, adresse enregistrée mer.gouv.fr,
+    jamais détecté faute de recherche sur cette seconde adresse). Toutes les adresses
+    fournies sont recherchées en une seule requête Gmail (clause OR).
 
     Renvoie l'id du thread le plus récent trouvé, ou None si vraiment aucune réponse.
     Utilisé par le moteur de relances pour arrêter une séquence dès qu'un recruteur a
@@ -124,8 +132,13 @@ def find_reply(service: Any, from_email: str, since_iso: str) -> Optional[str]:
     répondu) — c'est à l'appelant de décider quoi faire d'un échec (typiquement : ne
     pas agir sur cette candidature ce run-là).
     """
+    emails: List[str] = [e for e in ([from_emails] if isinstance(from_emails, str) else from_emails) if e]
+    if not emails:
+        return None
+
     since_gmail = since_iso.replace("-", "/")  # Gmail attend after:YYYY/MM/DD
-    query = f"from:{from_email} after:{since_gmail}"
+    from_clause = " OR ".join(f"from:{e}" for e in emails)
+    query = f"({from_clause}) after:{since_gmail}" if len(emails) > 1 else f"from:{emails[0]} after:{since_gmail}"
     res: Dict[str, Any] = service.users().messages().list(userId="me", q=query, maxResults=5).execute()
     messages = res.get("messages", [])
     return messages[0]["threadId"] if messages else None
@@ -146,6 +159,10 @@ def main() -> None:
         default=default_cv,
         help="Chemin vers le CV PDF",
     )
+    parser.add_argument(
+        "--lettre",
+        help="Chemin vers la lettre de motivation PDF (pièce jointe additionnelle, ex. candidature PASS où CV et lettre sont exigés par mail)",
+    )
     args = parser.parse_args()
 
     body_text = args.body or ""
@@ -160,8 +177,12 @@ def main() -> None:
     print(f"Connexion à l'API Gmail pour {user_email}...")
     service = get_gmail_service()
 
+    attachment_paths = [p for p in [args.cv, args.lettre] if p]
     print(f"Création du brouillon pour {args.to}...")
-    draft = create_draft(service, args.to, args.subject, body_text, args.cv, from_email=personal.get("email"))
+    draft = create_draft(
+        service, args.to, args.subject, body_text,
+        attachment_paths=attachment_paths, from_email=personal.get("email"),
+    )
     draft_id = draft.get("id")
     print(f"\n✅ Brouillon créé avec succès dans votre boîte Gmail !")
     print(f"ID du brouillon : {draft_id}")

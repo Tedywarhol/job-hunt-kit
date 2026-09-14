@@ -185,9 +185,12 @@ def process_entry(
         return result
     entry.setdefault("date_j0", anchor)
 
-    # 1) Réponse ? Priorité absolue, indépendamment de l'échéance.
+    # 1) Réponse ? Priorité absolue, indépendamment de l'échéance. Recherche aussi sur
+    # `email_alias_connue` (adresse alternative connue pour ce contact, ex. domaine
+    # différent côté administration) quand elle est renseignée — cf. find_reply().
+    emails_a_verifier = [e for e in [email, entry.get("email_alias_connue")] if e]
     try:
-        thread_id = find_reply(service, email, anchor)
+        thread_id = find_reply(service, emails_a_verifier, anchor)
     except Exception as e:
         log_error(f"run_followups: vérification réponse Gmail pour {email}", e)
         result["action"] = "ignorée"
