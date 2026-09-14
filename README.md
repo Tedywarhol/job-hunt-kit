@@ -316,12 +316,17 @@ existent côté serveur mais l'automatisation d'un compte LinkedIn est contraire
 d'utilisation et expose à un risque réel de restriction ou de bannissement du compte (cf. avertissement
 du projet source). Ils ne sont donc utilisés par `recruiter-outreach` que si vous passez `actif: true`
 dans `config/linkedin-outreach.json` — décision explicite, à votre charge et à vos risques. Même activé :
-- une seule action par recruiter (jamais de relance LinkedIn, celles-ci restent par email),
-- plafonds quotidien/hebdomadaire configurables (`config/linkedin-outreach.json`),
-- confirmation explicite du texte avant chaque envoi (jamais d'envoi automatique en boucle).
+- une seule action par recruiter/manager (jamais de relance LinkedIn, celles-ci restent par email),
+- une seule séance par jour, jusqu'à `plafond_actions_jour` contacts (10 par défaut) et
+  `plafond_actions_semaine` (50 par défaut), configurables dans `config/linkedin-outreach.json`,
+- confirmation explicite du texte avant chaque envoi, un par un (jamais d'envoi en boucle sans
+  validation individuelle), l'utilisateur présent du début à la fin de la séance.
 
-Modèles dans `config/linkedin-outreach-templates.md`. Le contact recruteur par email (brouillon Gmail,
-cf. section 5) reste le canal principal dans tous les cas.
+Deux usages couverts par `recruiter-outreach` en séance quotidienne : le contact recruteur lié à une
+offre `À traiter`, et la **candidature spontanée** à un manager data/IA ou un RH sans poste publié
+(cible dans `config/companies.yaml` ou repérée par le radar), pour se positionner avant qu'un besoin
+soit formalisé. Modèles pour les deux cas dans `config/linkedin-outreach-templates.md`. Le contact
+recruteur par email (brouillon Gmail, cf. section 5) reste le canal principal pour une offre existante.
 
 Deux scripts déterministes (pas des agents IA, aucun coût de token) complètent le cycle au-delà de l'envoi :
 

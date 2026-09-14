@@ -39,6 +39,23 @@ Bonne journée,
 {nom_candidat}
 ```
 
+## Candidature spontanée (manager/RH, sans offre ouverte)
+
+Pour un manager data/IA ou un RH identifié via `search_people`/`get_company_employees` chez une
+entreprise de `config/companies.yaml` (ou repérée par le radar du jour) sans poste publié correspondant.
+L'angle : se positionner avant qu'un poste existe, pas relancer un besoin déjà affiché ailleurs.
+
+**Note de connexion (≤ 300 caractères) :**
+
+```
+Bonjour{prenom}, je suis {nom_candidat}, en recherche de stage/alternance Data et IA. Votre poste de
+{fonction} chez {entreprise} m'intéresse, même sans offre publiée je serais ravi d'échanger si un
+besoin se présente. Bonne journée.
+```
+
+Mêmes règles que ci-dessus : personnalise réellement {fonction}/{entreprise}, vérifie la longueur avec
+les valeurs substituées, jamais deux personnes avec un texte identique dans la même séance.
+
 ## Règles
 
 - **JAMAIS le caractère « — »**, ni « & » (écris « et »). Vérifie avec

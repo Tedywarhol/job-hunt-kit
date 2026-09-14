@@ -1,9 +1,10 @@
 {
   "_lisez_moi": "Active connect_with_person / send_message via le serveur MCP linkedin (.mcp.json). Automatisation d'un compte LinkedIn personnel : contraire aux CGU LinkedIn, risque réel de restriction ou de bannissement du compte (cf. README, section LinkedIn). Passez 'actif' à true seulement si vous acceptez ce risque pour votre compte.",
   "actif": false,
-  "plafond_actions_jour": 5,
-  "plafond_actions_semaine": 15,
+  "plafond_actions_jour": 10,
+  "plafond_actions_semaine": 50,
   "delai_min_secondes_entre_actions": 30,
   "une_seule_action_par_contact": true,
-  "relances_linkedin_autorisees": false
+  "relances_linkedin_autorisees": false,
+  "une_seule_seance_par_jour": true
 }

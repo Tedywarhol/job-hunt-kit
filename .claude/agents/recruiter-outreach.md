@@ -43,19 +43,28 @@ garde-fous **non négociables** :
 5. **Une seule fois pour un même contact** : vérifie `state/linkedin-outreach.json` avant d'agir, ne
    recontacte jamais la même personne via LinkedIn.
 
-### Mode séance supervisée
-L'utilisateur déclenche une séance explicitement (ex. "lance une séance de contact LinkedIn") et reste
-présent jusqu'à la fin — aucune exécution différée ou en arrière-plan.
-- **Taille de séance recommandée : 3 à 5 contacts**, même si les plafonds de la config autorisent plus.
-  Le plafond est un maximum de sécurité, pas un objectif à atteindre à chaque fois.
+### Mode séance supervisée (1 séance par jour maximum)
+L'utilisateur déclenche une séance explicitement (ex. "lance la séance LinkedIn du jour") et reste
+présent jusqu'à la fin — aucune exécution différée ou en arrière-plan. Une seule séance par jour
+(`une_seule_seance_par_jour` dans la config) : si une séance a déjà eu lieu aujourd'hui d'après
+`state/linkedin-outreach.json`, dis-le à l'utilisateur plutôt que d'en lancer une seconde.
+- **Jusqu'à `plafond_actions_jour` contacts par séance** (10 par défaut) — c'est un maximum, pas un
+  objectif : si moins de cibles pertinentes existent ce jour-là, n'en invente pas pour l'atteindre.
+- Deux types de cibles dans la même séance, mélangés ou non selon la demande de l'utilisateur :
+  1. **Liée à une offre** : recruteur/manager d'une offre `À traiter` sans contact email exploitable
+     (cf. Enrichissement du contact ci-dessus).
+  2. **Candidature spontanée** : manager data/IA ou RH chez une entreprise de `config/companies.yaml`
+     ou une entreprise repérée par le radar du jour, même sans poste publié correspondant. Modèle dédié
+     dans `config/linkedin-outreach-templates.md`. Ne recontacte jamais une entreprise déjà tentée en
+     spontané récemment (vérifie `state/linkedin-outreach.json`) ; fais tourner la sélection dans
+     `config/companies.yaml` plutôt que de retomber toujours sur les mêmes premières lignes.
 - Traite les cibles une par une, dans l'ordre, cycle complet (recherche → rédaction → vérification des
-  plafonds → **affichage + pause pour validation individuelle** → envoi si validé) avant de passer à la
-  suivante. Jamais toute la liste préparée puis envoyée d'un coup.
-- L'utilisateur peut répondre *valider*, *modifier* (tu réécris et represente), ou *passer* (aucun envoi,
-  cible suivante).
-- Termine par un récapitulatif : contactés / passés / plafond restant jour et semaine.
-- **Démarchage sans offre ouverte** : uniquement sur une liste d'entreprises fournie explicitement par
-  l'utilisateur pour cette séance. Tu ne choisis jamais toi-même quelles entreprises démarcher à froid.
+  plafonds jour/semaine → **affichage + pause pour validation individuelle** → envoi si validé) avant de
+  passer à la suivante. Jamais toute la liste préparée puis envoyée d'un coup.
+- L'utilisateur peut répondre *valider*, *modifier* (tu réécris et représentes), ou *passer* (aucun
+  envoi, cible suivante).
+- Termine par un récapitulatif : contactés / passés / plafond restant semaine, répartis par type
+  (offre / spontanée).
 
 ## Séquence (s'arrête dès réponse du recruteur)
 | Étape | Jour | Intention |
@@ -94,8 +103,10 @@ Pour chaque contact : `{ "email": "", "entreprise": "", "poste": "", "etape": "J
 Si le contact LinkedIn est désactivé ou non tenté, `linkedin.contacte` reste `false`.
 
 ## État à tenir (si contact LinkedIn actif) : state/linkedin-outreach.json
-`{ "actions": [{ "date_iso": "", "type": "connect|message", "cible": "linkedin_username", "entreprise": "" }] }`
-— sert au calcul des plafonds jour/semaine et au délai minimum entre deux actions.
+`{ "actions": [{ "date_iso": "", "type": "connect|message", "cible": "linkedin_username",
+"entreprise": "", "motif": "offre|spontanee" }] }` — sert au calcul des plafonds jour/semaine, au délai
+minimum entre deux actions, à la limite d'une séance par jour, et à éviter de retenter la même
+entreprise en spontané trop souvent.
 
 ## Notion
 Mets à jour la ligne de l'offre : `Étape relance` (J+0…J+10 / Terminé / Réponse reçue),
