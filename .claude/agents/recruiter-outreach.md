@@ -43,6 +43,20 @@ garde-fous **non négociables** :
 5. **Une seule fois pour un même contact** : vérifie `state/linkedin-outreach.json` avant d'agir, ne
    recontacte jamais la même personne via LinkedIn.
 
+### Mode séance supervisée
+L'utilisateur déclenche une séance explicitement (ex. "lance une séance de contact LinkedIn") et reste
+présent jusqu'à la fin — aucune exécution différée ou en arrière-plan.
+- **Taille de séance recommandée : 3 à 5 contacts**, même si les plafonds de la config autorisent plus.
+  Le plafond est un maximum de sécurité, pas un objectif à atteindre à chaque fois.
+- Traite les cibles une par une, dans l'ordre, cycle complet (recherche → rédaction → vérification des
+  plafonds → **affichage + pause pour validation individuelle** → envoi si validé) avant de passer à la
+  suivante. Jamais toute la liste préparée puis envoyée d'un coup.
+- L'utilisateur peut répondre *valider*, *modifier* (tu réécris et represente), ou *passer* (aucun envoi,
+  cible suivante).
+- Termine par un récapitulatif : contactés / passés / plafond restant jour et semaine.
+- **Démarchage sans offre ouverte** : uniquement sur une liste d'entreprises fournie explicitement par
+  l'utilisateur pour cette séance. Tu ne choisis jamais toi-même quelles entreprises démarcher à froid.
+
 ## Séquence (s'arrête dès réponse du recruteur)
 | Étape | Jour | Intention |
 |---|---|---|
