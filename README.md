@@ -31,20 +31,15 @@ CV et lettre de motivation calibrés 1 page A4 · base Notion connectée · brou
 
 ## Fonctionnement
 
-Le kit repose sur un pipeline en deux étapes :
+Le kit repose sur un pipeline en trois temps :
 
-```text
-ÉTAPE 1 · RADAR — veille et scoring
-  Sources (PASS, WTTJ, Indeed/HelloWork, ATS directs Greenhouse,
-  Teamtailor, Ashby, Lever) → déduplication → score /100
-  → upsert dans la base Notion « Candidatures »
-                    │
-                    ▼
-ÉTAPE 2 · CANDIDATURE — génération et envoi
-  File Notion « À traiter » → personnalisation CV + lettre
-  → rendu PDF A4 (Chrome headless) → formulaires vérifiés
-    et brouillons Gmail → relances J+3 / J+5 / J+7 / J+10
-```
+![Pipeline du Job-Hunt Kit : le radar note les offres et les range dans Notion, chaque offre retenue devient un CV et une lettre PDF, l'adresse passe le garde-fou des refus, un brouillon Gmail est préparé, puis les relances mettent le statut à jour dans Notion](docs/diagrams/pipeline.png)
+
+1. **Radar.** Les offres (PASS, WTTJ, Indeed/HelloWork, ATS directs Greenhouse, Teamtailor, Ashby, Lever, LinkedIn via MCP) sont dédupliquées, notées sur 100 et rangées dans la base Notion « Candidatures ».
+2. **Candidature.** Pour une offre « À traiter », le CV et la lettre sont personnalisés depuis le profil maître puis rendus en PDF A4 (Chrome headless). L'adresse du destinataire passe le garde-fou des refus, puis le kit prépare un brouillon Gmail ou remplit et vérifie le formulaire. L'envoi reste votre geste.
+3. **Suivi.** Les relances J+3, J+5, J+7 et J+10 s'arrêtent dès qu'une réponse arrive et mettent le statut à jour dans Notion. Le réseau de contacts propose l'adresse probable d'une personne et la soumet au même garde-fou.
+
+Le schéma se modifie dans [`docs/diagrams/pipeline.html`](docs/diagrams/pipeline.html), dessiné avec le plugin Claude Code [diagram-design](https://github.com/cathrynlavery/diagram-design).
 
 Deux principes structurent tout le reste :
 
@@ -324,7 +319,7 @@ job-hunt-kit/
 │   ├── cv/                  cv-data.template.json, cv.css, thèmes navy/emerald/bordeaux
 │   └── lettre/              lettre.css (mise en page corporative coordonnée)
 ├── tests/                   Suite pytest (264 tests)
-├── docs/                    Connexions (connexions.md) et plan d'architecture
+├── docs/                    Connexions (connexions.md), schéma du pipeline (diagrams/) et plan d'architecture
 ├── outputs/                 Un dossier par candidature (généré à l'usage, non versionné)
 ├── state/                   Cache et tracking (généré à l'usage, non versionné)
 └── logs/                    Journal d'erreurs (généré à l'usage, non versionné)
