@@ -40,14 +40,36 @@ Le kit repose sur un pipeline en trois temps :
 2. **Candidature.** Pour une offre « À traiter », le CV et la lettre sont personnalisés depuis le profil maître puis rendus en PDF A4 (Chrome headless). L'adresse du destinataire passe le garde-fou des refus, puis le kit prépare un brouillon Gmail ou remplit et vérifie le formulaire. L'envoi reste votre geste.
 3. **Suivi.** Les relances J+3, J+5, J+7 et J+10 s'arrêtent dès qu'une réponse arrive et mettent le statut à jour dans Notion. Le réseau de contacts propose l'adresse probable d'une personne et la soumet au même garde-fou.
 
-Le schéma se modifie dans [`docs/diagrams/pipeline.html`](docs/diagrams/pipeline.html), dessiné avec le plugin Claude Code [diagram-design](https://github.com/cathrynlavery/diagram-design).
-
-Pour comprendre le détail (le radar, le passage de l'offre au brouillon Gmail, le réseau de contacts, l'interface), cinq schémas et leurs explications sont dans **[docs/architecture.md](docs/architecture.md)**.
-
 Deux principes structurent tout le reste :
 
 - **Une seule source de vérité.** Le contenu maître du CV vit dans `templates/cv/cv-data.json` ; chaque candidature n'ajoute que des variables (`cv-vars.json`, `lettre-vars.json`) dans son dossier `outputs/<slug>/`.
 - **La fiabilité avant la fonctionnalité.** Dates normalisées en ISO, contrôle de cohérence entre `outputs/`, l'état local et Notion, erreurs jamais silencieuses, audit anti-fuite de données personnelles à chaque partage.
+
+### Vue d'ensemble
+
+![Le kit au centre, entouré des offres du web, du profil maître, des agents Claude Code, de Notion, de Gmail, de l'état local, de l'interface graphique et de vous](docs/diagrams/architecture-vue-ensemble.png)
+
+Le **cœur Python** (`hunt.py` et 41 scripts) fait le travail ; les **agents Claude Code** l'enchaînent quand vous travaillez avec un assistant ; l'**interface graphique** le montre à l'écran. Tout converge vers trois sorties : l'**état local** (`state/`, `outputs/`), **Notion** pour le suivi et des **brouillons Gmail** que vous seul envoyez.
+
+### Le radar
+
+![Trois sources passent un filtre commun, reçoivent une note sur 100, entrent dans une file locale sans doublon, puis dans la base Notion Candidatures ; les offres trop anciennes sont écartées](docs/diagrams/architecture-radar.png)
+
+Greenhouse, Lever et Ashby (par leurs API publiques), PASS (fonction publique) et LinkedIn (par un serveur MCP, en lecture seule) passent le **même filtre** et reçoivent une **note sur 100** : profil, fraîcheur de l'offre et, pour LinkedIn, bonus aux offres peu postulées. L'agent `job-scout` peut aussi chercher sur WTTJ, Indeed et HelloWork avec des outils de scraping. Les offres tombent dans une file locale sans doublon, puis dans Notion ; celles qui restent « À traiter » plus de 15 jours sont écartées.
+
+### De l'offre au brouillon Gmail
+
+![Une offre à traiter devient un CV et une lettre en PDF, passe les contrôles et le garde-fou des refus, devient un brouillon Gmail que vous relisez et envoyez, puis les relances J+3 à J+10 suivent et mettent Notion à jour](docs/diagrams/architecture-candidature.png)
+
+L'agent `cv-tailor` n'écrit que des **variables** (accroche, projets retenus, mots-clés) : le contenu maître ne change jamais. Le CV tient sur **une page A4 avec 12 mm de marge**, sinon le kit retire des projets plutôt que de réduire les polices. Avant tout brouillon, le **garde-fou** vérifie que l'adresse ou l'entreprise n'a pas déjà refusé. Les relances à J+3, J+5, J+7 et J+10 sont aussi des brouillons, et **s'arrêtent dès qu'une réponse arrive**.
+
+### Le réseau de contacts
+
+![Les échanges Gmail deviennent un réseau classé par niveau de confiance et le format d'adresse de chaque entreprise, envoyés dans Notion ; une personne repérée sur LinkedIn reçoit une adresse probable qui passe le garde-fou](docs/diagrams/architecture-reseau.png)
+
+Le kit lit votre boîte Gmail (en lecture seule) pour apprendre **à qui vous avez écrit et à quelle adresse** : chaque contact reçoit un **niveau de confiance** de 1 (opportunité) à 5 (sans réponse), et chaque entreprise un **format d'adresse** (`prenom.nom`, `p.nom`...) avec sa confiance. Pour une candidature spontanée, on repère la bonne personne sur LinkedIn et `network.py adresse` propose son adresse, après le garde-fou.
+
+Chaque schéma est expliqué étape par étape dans **[docs/architecture.md](docs/architecture.md)**. Ils sont dessinés avec le plugin Claude Code [diagram-design](https://github.com/cathrynlavery/diagram-design) et se régénèrent avec `python docs/diagrams/architecture.py` (le schéma simple ci-dessus : [`docs/diagrams/pipeline.html`](docs/diagrams/pipeline.html)).
 
 ## Prérequis
 
@@ -318,6 +340,8 @@ Le dossier [`ui-agent/`](ui-agent/) contient une application locale qui met le s
 - **Tableau de bord** : relances dues ou en retard, statut réel des candidatures dans Notion, meilleures offres du radar, réseau par niveau de confiance, régénération des PDF d'un dossier.
 - **Chat** : un assistant qui connaît les actions du kit (garde-fou des refus, adresse probable, simulation des relances). Il peut tourner sur un modèle local avec Ollama, sans clé ni envoi de données.
 - **Rien ne part tout seul** : aucune action n'envoie de message ni ne crée de brouillon. La logique métier reste dans les scripts Python (`scripts/ui_data.py`) : l'écran ne fait que l'afficher.
+
+![Le navigateur, le modèle du chat et les actions agent-native passent par un pont TypeScript qui lance les scripts Python du kit, lesquels lisent l'état local, Notion et Gmail ; aucune action n'envoie de message](docs/diagrams/architecture-interface.png)
 
 ```bash
 cd ui-agent
