@@ -69,7 +69,7 @@ L'agent `cv-tailor` n'écrit que des **variables** (accroche, projets retenus, m
 
 Le kit lit votre boîte Gmail (en lecture seule) pour apprendre **à qui vous avez écrit et à quelle adresse** : chaque contact reçoit un **niveau de confiance** de 1 (opportunité) à 5 (sans réponse), et chaque entreprise un **format d'adresse** (`prenom.nom`, `p.nom`...) avec sa confiance. Pour une candidature spontanée, on repère la bonne personne sur LinkedIn et `network.py adresse` propose son adresse, après le garde-fou.
 
-Chaque schéma est expliqué étape par étape dans **[docs/architecture.md](docs/architecture.md)**. Ils sont dessinés avec le plugin Claude Code [diagram-design](https://github.com/cathrynlavery/diagram-design) et se régénèrent avec `python docs/diagrams/architecture.py` (le schéma simple ci-dessus : [`docs/diagrams/pipeline.html`](docs/diagrams/pipeline.html)).
+Chaque schéma est expliqué étape par étape dans **[docs/architecture.md](docs/architecture.md)**. Ils sont dessinés dans le style [Excalidraw](https://excalidraw.com), avec les logos des outils : les fichiers sources [`docs/diagrams/excalidraw/*.excalidraw`](docs/diagrams/excalidraw/) s'ouvrent sur excalidraw.com pour être retouchés à la main, et `python docs/diagrams/excalidraw/build.py` les régénère.
 
 ## Prérequis
 

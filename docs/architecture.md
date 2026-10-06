@@ -130,14 +130,11 @@ Le kit s'appuie sur des projets trouvés en suivant GitHub, assemblés plutôt q
 | :--- | :--- |
 | [`stickerdaniel/linkedin-mcp-server`](https://github.com/stickerdaniel/linkedin-mcp-server) | L'accès à LinkedIn depuis une session Claude Code (recherche d'offres, profils) |
 | [agent-native](https://agent-native.com) | Le socle de l'interface : chat, actions partagées, tableau de bord |
-| [`cathrynlavery/diagram-design`](https://github.com/cathrynlavery/diagram-design) | Le plugin qui dessine les schémas de cette page |
+| [`excalidraw/excalidraw`](https://github.com/excalidraw/excalidraw) | Le style et le moteur de rendu des schémas de cette page, avec des fichiers sources modifiables |
 
 ## 10. Régénérer les schémas
 
-Les schémas sont décrits dans `docs/diagrams/architecture.py` (un bloc de code par schéma, sur le modèle du plugin diagram-design) :
+Les schémas sont dessinés dans le style [Excalidraw](https://excalidraw.com), avec les logos des outils (Simple Icons et Devicon, voir `docs/diagrams/excalidraw/logos/README.md`). Deux façons de les retoucher :
 
-```bash
-python docs/diagrams/architecture.py     # réécrit les pages HTML autonomes
-```
-
-Chaque page `docs/diagrams/architecture-*.html` s'ouvre dans un navigateur. Les images PNG affichées ici sont des captures de ces pages à l'échelle 2.
+- **À la main** : ouvrez un fichier `docs/diagrams/excalidraw/*.excalidraw` sur excalidraw.com (ou dans l'extension Excalidraw de VS Code), modifiez-le, puis exportez-le en PNG dans `docs/diagrams/`.
+- **Par le code** : chaque schéma est décrit dans `docs/diagrams/excalidraw/diagrams.py` (blocs, flèches, étiquettes), avec l'outil `kit.py`. `python docs/diagrams/excalidraw/build.py` réécrit les six images et les six fichiers `.excalidraw` ; il faut `pip install playwright`, `python -m playwright install chromium` et un accès à Internet (la bibliothèque Excalidraw est chargée depuis esm.sh). Un nom en argument ne régénère que les schémas qui le contiennent : `build.py radar`.
