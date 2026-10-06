@@ -321,10 +321,10 @@ Le dossier [`ui-agent/`](ui-agent/) contient une application locale qui met le s
 cd ui-agent
 cp .env.example .env
 pnpm install
-pnpm dev
+pnpm dev                  # développement, ou : pnpm build puis pnpm start (version construite)
 ```
 
-Pour essayer l'écran sans vos données, lancez-le avec `HUNT_UI_DEMO=1 pnpm dev` : il affiche des données fictives. Le détail (écrans, actions, modèle du chat, tests) est dans **[ui-agent/README.md](ui-agent/README.md)**.
+L'interface vit dans le même dépôt que le kit : elle lit directement `state/` et `outputs/` et appelle les scripts de `scripts/`, sans rien dupliquer. Pour essayer l'écran sans vos données, lancez-le avec `HUNT_UI_DEMO=1 pnpm dev` : il affiche des données fictives. Le détail (écrans, actions, modèle du chat, tests) est dans **[ui-agent/README.md](ui-agent/README.md)**.
 
 ## Structure du projet
 

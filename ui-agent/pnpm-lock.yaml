@@ -213,6 +213,9 @@ importers:
       embla-carousel-react:
         specifier: ^8.6.0
         version: 8.6.0(react@19.3.0)
+      esbuild:
+        specifier: 0.28.2
+        version: 0.28.2
       happy-dom:
         specifier: ^17.0.0
         version: 17.6.3

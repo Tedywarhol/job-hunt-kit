@@ -12,10 +12,22 @@ Prérequis : Node.js 22 ou plus, [pnpm](https://pnpm.io/) (`corepack enable`), P
 cd ui-agent
 cp .env.example .env      # puis ajustez le modèle du chat, voir ci-dessous
 pnpm install
-pnpm dev
+pnpm dev                  # mode développement
 ```
 
-Le premier démarrage prépare les dépendances et peut durer plusieurs minutes, les suivants sont rapides. L'application s'ouvre sur le tableau de bord.
+Le premier démarrage prépare les dépendances et peut durer plusieurs minutes (environ 4 sous Windows), les suivants sont rapides. Le premier chargement de la page dans le navigateur est lui aussi long en mode développement, qui demande près de 10 000 modules.
+
+**Version construite**, plus rapide à l'usage :
+
+```bash
+pnpm build                # 8 à 10 minutes la première fois sous Windows
+pnpm start                # démarre en quelques secondes ; PORT=3056 pnpm start pour un autre port
+```
+
+- `pnpm start` passe par `scripts/start.mjs`, qui charge `.env` d'abord (le serveur construit ne le lit pas seul).
+- Il faut un secret de session dans `.env` : `BETTER_AUTH_SECRET`, voir `.env.example` pour la commande qui le génère.
+- `esbuild` est une dépendance du projet (et pas seulement de Vite) : le build en a besoin pour regrouper `yjs`, et sans lui il échoue en fin de parcours.
+- Le build affiche des erreurs de configuration « production » (pas de base Postgres, authentification désactivée) qui concernent un déploiement public, pas cet usage local à une seule personne.
 
 ## Les écrans
 
@@ -49,7 +61,9 @@ Garde-fous : aucune action n'envoie de message, aucune ne crée de brouillon (le
 
 ## Le modèle du chat
 
-- **Ollama (local)** : aucune clé, aucune donnée ne quitte la machine. Dans `.env`, décommentez `AGENT_ENGINE=ai-sdk:ollama` et `OLLAMA_BASE_URL=http://localhost:11434`, puis choisissez le modèle dans le chat. Les petits modèles enchaînent moins bien les actions : vérifiez ce qu'ils proposent.
+- **Ollama (local)** : aucune clé, aucune donnée ne quitte la machine. Dans `.env`, décommentez `AGENT_ENGINE=ai-sdk:ollama` et `OLLAMA_BASE_URL=http://localhost:11434`.
+- **Quels modèles dans le menu ?** Le framework ne propose que `llama3.1`, `llama3.2`, `mistral` et `codestral`, rarement ceux que vous avez installés. `OLLAMA_MODELS` (séparés par des virgules, voir `ollama list`) s'y ajoute, et `OLLAMA_DEFAULT_MODEL` choisit le modèle par défaut. Cette liste est lue par `scripts/patch-core.js`, appliqué à chaque `pnpm install` (testé par `scripts/ollama-models.spec.ts`).
+- **Les actions demandent la capacité « tools »** : le chat envoie les actions du kit comme outils. Un modèle qui ne l'a pas (par exemple `gemma3:4b`, vérifiable avec `ollama show gemma3:4b`) répond à une conversation mais échoue dès qu'une action est utile (« does not support tools »). Pour piloter le kit, choisissez `qwen2.5:3b`, `qwen3.5:9b` ou `gemma4:12b`. Les petits modèles enchaînent moins bien les actions : vérifiez ce qu'ils proposent.
 - **Claude** : saisissez votre clé dans Réglages (ou `ANTHROPIC_API_KEY` dans `.env`). Elle ne doit jamais entrer dans Git.
 
 ## Ce qui reste local

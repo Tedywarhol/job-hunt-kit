@@ -100,4 +100,22 @@ const execFileSync = (file, args, options) => {
   }
 }
 
-console.log("[patch-core] @agent-native/core CLI successfully patched for Windows spaces support.");
+// 4. Modèles Ollama du chat. La liste est figée dans le paquet (llama3.1, llama3.2, mistral, codestral)
+// et ne contient pas les modèles que l'on a vraiment installés. OLLAMA_MODELS (séparés par des virgules,
+// dans .env) s'y ajoute, OLLAMA_DEFAULT_MODEL choisit le modèle par défaut. Le test `typeof process`
+// garde le bundle du navigateur, où `process` n'existe pas.
+const modelConfigPath = path.resolve(__dirname, "../node_modules/@agent-native/core/dist/agent/model-config.js");
+if (fs.existsSync(modelConfigPath)) {
+  let content = fs.readFileSync(modelConfigPath, "utf-8");
+  const original = /defaultModel: "llama3\.1",(\s*)supportedModels: \["llama3\.1", "llama3\.2", "mistral", "codestral"\],/;
+  if (!content.includes("OLLAMA_MODELS") && original.test(content)) {
+    const env = '(typeof process !== "undefined" ? process.env : {})';
+    content = content.replace(
+      original,
+      `defaultModel: ${env}.OLLAMA_DEFAULT_MODEL || "llama3.1",$1supportedModels: [...new Set([...(${env}.OLLAMA_MODELS || "").split(",").map((model) => model.trim()).filter(Boolean), "llama3.1", "llama3.2", "mistral", "codestral"])],`,
+    );
+    fs.writeFileSync(modelConfigPath, content, "utf-8");
+  }
+}
+
+console.log("[patch-core] @agent-native/core patched (Windows spaces and esbuild, Ollama models from OLLAMA_MODELS).");
