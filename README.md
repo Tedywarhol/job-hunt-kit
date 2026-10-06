@@ -7,7 +7,7 @@
 CV et lettre de motivation calibrés 1 page A4 · base Notion connectée · brouillons Gmail OAuth · relances J+3 à J+10 · réseau de contacts par niveau de confiance · radar LinkedIn (MCP)
 
 ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)
-![Tests](https://img.shields.io/badge/Tests-264%20passing-2EA44F)
+![Tests](https://img.shields.io/badge/Tests-274%20passing-2EA44F)
 ![Plateformes](https://img.shields.io/badge/OS-Windows%20%C2%B7%20macOS%20%C2%B7%20Linux-4A5568)
 
 </div>
@@ -22,10 +22,11 @@ CV et lettre de motivation calibrés 1 page A4 · base Notion connectée · brou
 4. [Le design system du CV](#le-design-system-du-cv)
 5. [Commandes du quotidien](#commandes-du-quotidien)
 6. [Connexions (Gmail, Notion, LinkedIn, Excalidraw)](#connexions)
-7. [Structure du projet](#structure-du-projet)
-8. [Sous-agents et skills (Claude Code)](#sous-agents-et-skills-claude-code)
-9. [Dépannage et FAQ](#dépannage-et-faq)
-10. [Licence](#licence)
+7. [Interface graphique](#interface-graphique)
+8. [Structure du projet](#structure-du-projet)
+9. [Sous-agents et skills (Claude Code)](#sous-agents-et-skills-claude-code)
+10. [Dépannage et FAQ](#dépannage-et-faq)
+11. [Licence](#licence)
 
 ---
 
@@ -55,6 +56,7 @@ Deux principes structurent tout le reste :
 | Intégration Notion | token + page parente, pour la base « Candidatures » (recommandé) |
 | Projet Google Cloud + API Gmail | pour les brouillons OAuth, les relances et le réseau de contacts (optionnel) |
 | [uv](https://docs.astral.sh/uv/) + Claude Code | pour les serveurs MCP LinkedIn et Excalidraw (optionnel, voir [Connexions](docs/connexions.md)) |
+| Node.js 22 ou plus + pnpm | pour l'[interface graphique](#interface-graphique) (optionnel) |
 
 Pour le scraping stealth des offres PASS, le navigateur Chromium s'installe séparément (une seule fois) :
 
@@ -101,7 +103,7 @@ Choix [0-8] :
 | Brouillons Gmail | `python hunt.py draft --top 5` | Prépare les emails avec CV joint dans vos brouillons. |
 | Diagnostic | `python hunt.py status` | Vérifie Chrome, Notion et Gmail. |
 | Import de profil | `python hunt.py profile import <fichier>` | Extrait le texte d'un CV existant (PDF, DOCX, TXT, MD). |
-| Tests | `python hunt.py test` | Exécute la suite automatisée (264 tests). |
+| Tests | `python hunt.py test` | Exécute la suite automatisée (274 tests). |
 | Pack de partage | `python hunt.py kit` | Génère un zip propre, sans secrets. |
 
 ## Le design system du CV
@@ -305,6 +307,25 @@ Chaque CV doit tenir sur une page A4 avec 12 mm de blanc en bas. `render_cv.py -
 
 Le pas à pas complet, les droits demandés et les garde-fous sont dans **[docs/connexions.md](docs/connexions.md)**.
 
+## Interface graphique
+
+Le dossier [`ui-agent/`](ui-agent/) contient une application locale qui met le suivi à l'écran et ajoute un chat avec un assistant capable de lancer les scripts du kit.
+
+![Tableau de bord du kit, avec des données fictives : relances à faire, candidatures par statut, offres en attente, réseau par niveau de confiance et dossiers de candidature](docs/diagrams/dashboard.png)
+
+- **Tableau de bord** : relances dues ou en retard, statut réel des candidatures dans Notion, meilleures offres du radar, réseau par niveau de confiance, régénération des PDF d'un dossier.
+- **Chat** : un assistant qui connaît les actions du kit (garde-fou des refus, adresse probable, simulation des relances). Il peut tourner sur un modèle local avec Ollama, sans clé ni envoi de données.
+- **Rien ne part tout seul** : aucune action n'envoie de message ni ne crée de brouillon. La logique métier reste dans les scripts Python (`scripts/ui_data.py`) : l'écran ne fait que l'afficher.
+
+```bash
+cd ui-agent
+cp .env.example .env
+pnpm install
+pnpm dev
+```
+
+Pour essayer l'écran sans vos données, lancez-le avec `HUNT_UI_DEMO=1 pnpm dev` : il affiche des données fictives. Le détail (écrans, actions, modèle du chat, tests) est dans **[ui-agent/README.md](ui-agent/README.md)**.
+
 ## Structure du projet
 
 ```text
@@ -318,7 +339,8 @@ job-hunt-kit/
 ├── templates/
 │   ├── cv/                  cv-data.template.json, cv.css, thèmes navy/emerald/bordeaux
 │   └── lettre/              lettre.css (mise en page corporative coordonnée)
-├── tests/                   Suite pytest (264 tests)
+├── ui-agent/                Interface graphique locale : tableau de bord et chat (Node, voir son README)
+├── tests/                   Suite pytest (274 tests)
 ├── docs/                    Connexions (connexions.md), schéma du pipeline (diagrams/) et plan d'architecture
 ├── outputs/                 Un dossier par candidature (généré à l'usage, non versionné)
 ├── state/                   Cache et tracking (généré à l'usage, non versionné)
