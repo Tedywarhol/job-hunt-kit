@@ -13,6 +13,7 @@
     "nom_famille": "NOM",
     "telephone": "+33 6 00 00 00 00",
     "email": "vous@example.com",
+    "emails_secondaires": [],
     "localisation": "Paris (75), France",
     "linkedin": "Prénom NOM",
     "linkedin_url": "https://www.linkedin.com/in/votre-profil/",

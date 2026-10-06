@@ -339,27 +339,41 @@ html, body {
     display: none;
 }
 
-/* En-tête Expériences (Grid) */
+/* En-tête Expériences (Grid) : intitulé et période sur la première ligne, type de contrat
+   (Stage, Alternance...), entreprise et lieu sur la seconde. Le type de contrat doit se voir au premier
+   coup d'oeil : un étudiant ne doit pas passer pour un professionnel (retour du 2026-10-03). */
 .exp-header {
     display: grid;
-    grid-template-columns: 1.45fr 1.05fr 0.7fr;
-    gap: 3.5px;
+    grid-template-columns: 1fr auto;
+    column-gap: 6px;
     align-items: baseline;
     margin-bottom: 0.25mm;
 }
 .exp-header .title {
+    grid-column: 1;
+    grid-row: 1;
     font-weight: 700;
     font-size: 9.2px;
     color: var(--primary);
 }
 .exp-header .company {
+    grid-column: 1 / -1;
+    grid-row: 2;
     font-weight: 500;
     font-size: 8.5px;
     color: var(--primary);
     text-align: left;
     opacity: 0.85;
 }
+.exp-header .company .contrat {
+    font-weight: 700;
+    font-size: 7.8px;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+}
 .exp-header .date {
+    grid-column: 2;
+    grid-row: 1;
     font-size: 8.1px;
     color: var(--primary);
     font-weight: 500;

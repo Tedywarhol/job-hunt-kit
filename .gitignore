@@ -45,3 +45,24 @@ __pycache__/
 
 # Kits générés
 job-hunt-kit_*.zip
+.gstack/
+
+# Clone local du serveur MCP LinkedIn tiers (référence pour l'édition de profil / apply_to_job,
+# cf. docs/plans/2026-09-07-plan-amelioration.md 2026-09-15) — dépôt tiers avec son propre
+# historique git, jamais versionné dans ce dépôt.
+.linkedin-mcp-fork/
+
+# Hors projet ou propre à cette machine (2026-10-06, même liste que make_kit.py)
+# - application de démonstration tierce (modèle « agent-native ») et sa base locale
+ui-agent/
+# - commandes slash d'un autre projet et principes personnels de l'utilisateur
+.claude/commands/
+.claude/rules/clean-code-principles.mdc
+.claude/rules/external-code-reuse.mdc
+.claude/rules/model-tiering-delegation.mdc
+.claude/rules/project-documentation.mdc
+# - supports d'atelier de tiers (guide CV nominatif)
+docs/guides/
+Guide CV_*.pdf
+# - configuration MCP locale (chemins absolus) : modèle versionné dans .mcp.example.json
+.mcp.json

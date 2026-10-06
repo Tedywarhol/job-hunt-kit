@@ -120,7 +120,7 @@ def find_reply(service: Any, from_emails: Union[str, List[str]], since_iso: str)
     connu, cf. `email_alias_connue` dans state/outreach.json) : un recruteur peut répondre
     depuis un domaine différent de celui enregistré au moment de la candidature (ex.
     administrations avec plusieurs domaines @gouv.fr) — bug réel constaté le 2026-09-14
-    (refus reçu depuis developpement-durable.gouv.fr, adresse enregistrée mer.gouv.fr,
+    (refus reçu depuis le second domaine d'un même ministère, adresse enregistrée sur le premier,
     jamais détecté faute de recherche sur cette seconde adresse). Toutes les adresses
     fournies sont recherchées en une seule requête Gmail (clause OR).
 
@@ -163,7 +163,17 @@ def main() -> None:
         "--lettre",
         help="Chemin vers la lettre de motivation PDF (pièce jointe additionnelle, ex. candidature PASS où CV et lettre sont exigés par mail)",
     )
+    parser.add_argument(
+        "--ignorer-refus", action="store_true",
+        help="Crée le brouillon même si le destinataire ou son entreprise a déjà refusé (cf. contact_guard.py).",
+    )
     args = parser.parse_args()
+
+    # Import local : contact_guard importe déjà ce module (get_gmail_service).
+    import contact_guard
+    verdict = contact_guard.check(args.to, contact_guard.load_refusals())
+    if verdict and not args.ignorer_refus:
+        sys.exit(f"Garde-fou ({verdict['niveau']}) : {verdict['raison']}. Relancez avec --ignorer-refus si c'est voulu.")
 
     body_text = args.body or ""
     if args.body_file and os.path.isfile(args.body_file):

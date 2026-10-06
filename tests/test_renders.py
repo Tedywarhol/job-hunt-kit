@@ -3,7 +3,10 @@ import os
 from typing import Any, Dict
 import unittest.mock as mock
 
+import pytest
+
 from render_cv import (
+    badge_etudiant,
     build_html as build_cv_html,
     esc,
     find_chrome,
@@ -54,6 +57,51 @@ def test_build_cv_html(dummy_cv_data: Dict[str, Any]) -> None:
     assert esc("Profil ciblé pour l'ingénierie des données") in html
     assert "ats-hidden-layer" in html
     assert "Kafka" in html
+
+
+def test_cv_ne_contient_aucun_tiret_cadratin(dummy_cv_data: Dict[str, Any]) -> None:
+    """Règle du projet, rappelée le 2026-10-03 : jamais « — » sur un CV, ni dans les titres de projets,
+    ni dans la ligne des langues, ni dans l'accroche."""
+    dummy_cv_data["projets"][0]["titre"] = "Plateforme RAG — Médicale"
+    dummy_cv_data["langues"] = [{"langue": "Anglais", "niveau": "Intermédiaire professionnel (B2)"}]
+    html = build_cv_html(dummy_cv_data, {"accroche": "Étudiant ingénieur — data et IA"}, profile="alternance")
+    assert "—" not in html
+    assert "Plateforme RAG : Médicale" in html
+    assert 'Anglais <span>· Intermédiaire professionnel (B2)</span>' in html
+
+
+def test_experience_affiche_le_type_de_contrat(dummy_cv_data: Dict[str, Any]) -> None:
+    """Retour du 2026-10-03 : les expériences étaient des stages et « ça ne se voyait nulle part »."""
+    dummy_cv_data["experiences"][0]["contrat"] = "Stage"
+    html = build_cv_html(dummy_cv_data, {}, profile="alternance")
+    assert '<strong class="contrat">Stage</strong> · Tech Innov' in html
+    dummy_cv_data["experiences"][0].pop("contrat")
+    assert '<strong class="contrat">' not in build_cv_html(dummy_cv_data, {}, profile="alternance")
+
+
+@pytest.mark.parametrize("badge,attendu", [
+    ("Ingénieur Data & IA", "Étudiant ingénieur\nData & IA"),
+    ("Ingénieur Data Science & IA", "Étudiant ingénieur\nData Science & IA"),
+    ("Ingénieur & Communication", "Étudiant ingénieur\nCommunication"),
+    ("ingénieur", "Étudiant ingénieur"),
+    ("Étudiant ingénieur\nData Science & IA", "Étudiant ingénieur\nData Science & IA"),
+    ("Data Science & IA", "Data Science & IA"),
+])
+def test_badge_etudiant(badge: str, attendu: str) -> None:
+    """Un étudiant n'est pas encore ingénieur : le titre sous le nom ne doit jamais l'affirmer."""
+    assert badge_etudiant(badge) == attendu
+
+
+def test_le_titre_sous_le_nom_est_corrige_meme_si_l_offre_ecrit_ingenieur(dummy_cv_data: Dict[str, Any]) -> None:
+    html = build_cv_html(dummy_cv_data, {"badge_titre": "Ingénieur Data & IA"}, profile="alternance")
+    assert '<div class="badge-title">Étudiant ingénieur<br>Data &amp; IA</div>' in html
+
+
+def test_select_projets_retrouve_un_titre_ecrit_avec_un_tiret_cadratin() -> None:
+    """Les anciens cv-vars écrivent « A — B » alors que le CV maître écrit maintenant « A : B »."""
+    projets = [{"titre": "Autre projet"}, {"titre": "HR Analytics : Modélisation prédictive du turnover"}]
+    choisis = select_projets(projets, selection=["HR Analytics — Modélisation prédictive du turnover"], projets_max=1)
+    assert [p["titre"] for p in choisis] == ["HR Analytics : Modélisation prédictive du turnover"]
 
 
 def test_build_lettre_html(dummy_cv_data: Dict[str, Any]) -> None:

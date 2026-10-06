@@ -17,7 +17,7 @@ Un objet offre (depuis Notion ou le Radar) : `entreprise`, `poste`, `type` (stag
 ## Étapes
 1. **Choisis le profil** : `type` = stage → profil `stage` ; alternance → profil `alternance`.
 2. **Crée le dossier** `outputs/<slug>/` où `slug` = `entreprise-poste` en minuscules, sans accents,
-   espaces → tirets (ex. `deepki-genai-data-scientist`).
+   espaces → tirets (ex. `acme-genai-data-scientist`).
 3. **Écris `outputs/<slug>/cv-vars.json`** :
    ```json
    {
@@ -51,6 +51,10 @@ Un objet offre (depuis Notion ou le Radar) : `entreprise`, `poste`, `type` (stag
    Ton naturel, pas de formules creuses. Vérifie avec `python scripts/check_human_tone.py <lettre-vars.json>`
    (aucun skill "humanizer" dans cet environnement — ce script est le filet de sécurité déterministe :
    caractères interdits + formules creuses fréquentes détectées, à relire toi-même sur les points signalés).
+   **Un CV d'étudiant (règle du 2026-10-03)** : ne mets jamais `badge_titre: "Ingénieur ..."` dans `cv-vars.json` (laisse le défaut
+   « Étudiant ingénieur / Data Science et IA » ; le moteur corrige d'office « Ingénieur X » en « Étudiant ingénieur X »),
+   ne retire pas le « Stage » des expériences de `cv-data.json` (champ `contrat`), ne présente jamais un stage comme un poste.
+   Le moteur retire seul les derniers projets si la page déborde (marge basse de 12 mm exigée).
 5. **Génère les PDF** :
    ```bash
    python scripts/build_application.py --slug <slug> --profile <stage|alternance>

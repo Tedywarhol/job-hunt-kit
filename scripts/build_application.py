@@ -17,18 +17,23 @@ import os
 import subprocess
 import sys
 
-from typing import List
+from typing import List, Tuple
 
 ROOT: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 from profile import doc_base_names, load_personal
+from render_cv import EXIT_TROP_CHARGE
 
 PY: str = sys.executable
 
 
-def run(cmd: List[str]) -> None:
+def run(cmd: List[str], tolere: Tuple[int, ...] = ()) -> int:
+    """Lance la commande ; lève sur tout code non nul sauf ceux de `tolere`, que l'appelant traite."""
     print("»", " ".join(cmd))
-    subprocess.run(cmd, check=True)
+    rc = subprocess.run(cmd).returncode
+    if rc != 0 and rc not in tolere:
+        raise subprocess.CalledProcessError(rc, cmd)
+    return rc
 
 
 def main() -> None:
@@ -49,8 +54,9 @@ def main() -> None:
     cv_html = os.path.join(folder, f"{cv_base}.html")
     lettre_html = os.path.join(folder, f"{lettre_base}.html")
 
-    run([PY, os.path.join(ROOT, "scripts", "render_cv.py"),
-         "--profile", args.profile, "--vars", cv_vars, "--out", cv_html, "--pdf"])
+    rc_cv = run([PY, os.path.join(ROOT, "scripts", "render_cv.py"),
+                 "--profile", args.profile, "--vars", cv_vars, "--out", cv_html, "--pdf"],
+                tolere=(EXIT_TROP_CHARGE,))
     run([PY, os.path.join(ROOT, "scripts", "render_lettre.py"),
          "--vars", lettre_vars, "--out", lettre_html, "--pdf"])
 
@@ -59,6 +65,9 @@ def main() -> None:
     ok = os.path.isfile(cv_pdf) and os.path.isfile(lettre_pdf)
     print("\nCV    :", cv_pdf, "OK" if os.path.isfile(cv_pdf) else "MANQUANT")
     print("Lettre:", lettre_pdf, "OK" if os.path.isfile(lettre_pdf) else "MANQUANT")
+    if rc_cv == EXIT_TROP_CHARGE:
+        print("\n[ERREUR] CV trop chargé : ne l'envoie pas tel quel (voir le message de render_cv ci-dessus).", file=sys.stderr)
+        sys.exit(EXIT_TROP_CHARGE)
     sys.exit(0 if ok else 2)
 
 

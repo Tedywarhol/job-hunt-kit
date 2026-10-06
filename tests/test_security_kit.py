@@ -20,6 +20,10 @@ def test_is_excluded_rules() -> None:
     assert is_excluded(".claude/settings.local.json")
     assert is_excluded(".env")
     assert is_excluded("__pycache__/script.cpython-314.pyc")
+    assert is_excluded(".linkedin-mcp-fork/README.md")
+    assert is_excluded(".gstack/config.json")
+    assert is_excluded("ui-agent/node_modules/react/index.js")
+    assert is_excluded("node_modules/vite/index.js")
 
     # Artefacts personnels/datés (2026-09-08) : jamais génériques, propres à ce déploiement.
     assert is_excluded("index.html")
@@ -29,12 +33,19 @@ def test_is_excluded_rules() -> None:
     assert is_excluded(".zcode/plans/plan-sess_abc.md")
 
     # Framework de règles personnel de l'utilisateur (2026-09-08) : sans rapport avec ce
-    # projet Python (gstack, tracker "Propulse V2", défauts Next.js/Supabase).
+    # projet Python (gstack, tracker de projet personnel, défauts Next.js/Supabase).
     assert is_excluded(".claude/rules/00-dispatcher-skills.mdc")
     assert is_excluded(".claude/rules/01-skill-router.mdc")
     assert is_excluded(".claude/rules/20-ecriture-multiagents.mdc")
     assert is_excluded(".claude/rules/20-new-project.mdc")
     assert is_excluded(".claude/rules/30-new-feature.mdc")
+    assert is_excluded(".claude/rules/model-tiering-delegation.mdc")
+    assert is_excluded(".claude/commands/verify.md")
+    # Hors projet ou propre à la machine (2026-10-06) : app tierce, guide nominatif, config MCP locale.
+    assert is_excluded("ui-agent/data/pglite/base/1/1259")
+    assert is_excluded("docs/guides/Guide CV atelier.md")
+    assert is_excluded(".mcp.json")
+    assert not is_excluded(".mcp.example.json")
     # Règles génériques : celles-là restent dans le kit.
     assert not is_excluded(".claude/rules/00-core.mdc")
     assert not is_excluded(".claude/rules/10-audit-qualite-securite.mdc")

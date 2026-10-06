@@ -4,10 +4,10 @@
 
 **Veille d'offres, scoring et candidatures sur-mesure — du repérage de l'annonce au brouillon Gmail prêt à envoyer, sans jamais perdre la main.**
 
-CV et lettre de motivation calibrés 1 page A4 · base Notion connectée · brouillons Gmail OAuth · relances J+3 à J+10
+CV et lettre de motivation calibrés 1 page A4 · base Notion connectée · brouillons Gmail OAuth · relances J+3 à J+10 · réseau de contacts par niveau de confiance · radar LinkedIn (MCP)
 
 ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)
-![Tests](https://img.shields.io/badge/Tests-134%20passing-2EA44F)
+![Tests](https://img.shields.io/badge/Tests-264%20passing-2EA44F)
 ![Plateformes](https://img.shields.io/badge/OS-Windows%20%C2%B7%20macOS%20%C2%B7%20Linux-4A5568)
 
 </div>
@@ -21,10 +21,11 @@ CV et lettre de motivation calibrés 1 page A4 · base Notion connectée · brou
 3. [Démarrage rapide](#démarrage-rapide)
 4. [Le design system du CV](#le-design-system-du-cv)
 5. [Commandes du quotidien](#commandes-du-quotidien)
-6. [Structure du projet](#structure-du-projet)
-7. [Sous-agents et skills (Claude Code)](#sous-agents-et-skills-claude-code)
-8. [Dépannage et FAQ](#dépannage-et-faq)
-9. [Licence](#licence)
+6. [Connexions (Gmail, Notion, LinkedIn, Excalidraw)](#connexions)
+7. [Structure du projet](#structure-du-projet)
+8. [Sous-agents et skills (Claude Code)](#sous-agents-et-skills-claude-code)
+9. [Dépannage et FAQ](#dépannage-et-faq)
+10. [Licence](#licence)
 
 ---
 
@@ -57,7 +58,8 @@ Deux principes structurent tout le reste :
 | Python 3.9 ou plus | `pip install -r requirements.txt` |
 | Google Chrome ou Edge | rendu PDF headless (détection automatique, sinon variable `CHROME_PATH`) |
 | Intégration Notion | token + page parente, pour la base « Candidatures » (recommandé) |
-| Projet Google Cloud + API Gmail | pour les brouillons OAuth (optionnel) |
+| Projet Google Cloud + API Gmail | pour les brouillons OAuth, les relances et le réseau de contacts (optionnel) |
+| [uv](https://docs.astral.sh/uv/) + Claude Code | pour les serveurs MCP LinkedIn et Excalidraw (optionnel, voir [Connexions](docs/connexions.md)) |
 
 Pour le scraping stealth des offres PASS, le navigateur Chromium s'installe séparément (une seule fois) :
 
@@ -104,7 +106,7 @@ Choix [0-8] :
 | Brouillons Gmail | `python hunt.py draft --top 5` | Prépare les emails avec CV joint dans vos brouillons. |
 | Diagnostic | `python hunt.py status` | Vérifie Chrome, Notion et Gmail. |
 | Import de profil | `python hunt.py profile import <fichier>` | Extrait le texte d'un CV existant (PDF, DOCX, TXT, MD). |
-| Tests | `python hunt.py test` | Exécute la suite automatisée (143 tests). |
+| Tests | `python hunt.py test` | Exécute la suite automatisée (264 tests). |
 | Pack de partage | `python hunt.py kit` | Génère un zip propre, sans secrets. |
 
 ## Le design system du CV
@@ -169,7 +171,7 @@ python scripts/notion_apply.py mark --url "https://..." --statut Postulé --date
 
 ### 4. Personnalisation et génération CV + lettre
 
-Pour chaque offre, créez un dossier `outputs/<slug>/` (ex. `outputs/cartelis-consultant-data/`) contenant deux fichiers de variables.
+Pour chaque offre, créez un dossier `outputs/<slug>/` (ex. `outputs/acme-consultant-data/`) contenant deux fichiers de variables.
 
 `cv-vars.json` :
 
@@ -187,7 +189,7 @@ Pour chaque offre, créez un dossier `outputs/<slug>/` (ex. `outputs/cartelis-co
 
 ```json
 {
-  "entreprise": "Cartelis",
+  "entreprise": "Acme Conseil",
   "poste": "Consultant Data & IA",
   "type": "alternance",
   "destinataire": "Madame, Monsieur",
@@ -203,7 +205,7 @@ Pour chaque offre, créez un dossier `outputs/<slug>/` (ex. `outputs/cartelis-co
 Puis lancez :
 
 ```bash
-python hunt.py apply cartelis-consultant-data --profile alternance
+python hunt.py apply acme-consultant-data --profile alternance
 ```
 
 Les fichiers `CV_<Prenom>_<NOM>.pdf` et `Lettre_<Prenom>_<NOM>.pdf` sont générés instantanément dans le dossier.
@@ -216,7 +218,7 @@ python hunt.py draft \
   --to "recruteur@entreprise.com" \
   --subject "Candidature Alternance — Consultant Data" \
   --body "Bonjour, veuillez trouver ci-joint mon CV..." \
-  --cv "outputs/cartelis-consultant-data/CV_Prenom_NOM.pdf"
+  --cv "outputs/acme-consultant-data/CV_Prenom_NOM.pdf"
 
 # Ou générer automatiquement les 5 meilleurs brouillons pour les offres PASS
 python hunt.py draft --top 5
@@ -257,19 +259,72 @@ python hunt.py kit
 
 Produit une archive `job-hunt-kit_<date>.zip` après audit garanti de l'absence de secrets (`.notion_token`, `credentials.json`, `gmail_token.json`, `.env`, données privées). L'audit scanne le contenu de **tous** les fichiers texte inclus — pas seulement le profil — pour l'email et le téléphone réels du candidat, chargés dynamiquement depuis le profil actif, jamais codés en dur dans le script lui-même.
 
+### 9. Garde-fou avant envoi : ne jamais relancer qui a dit non
+
+```bash
+# Reconstruit la liste des refus (mails reçus avec une formule de refus + lignes Notion « Refusé »)
+python scripts/contact_guard.py --refresh
+
+# Verdict pour une ou plusieurs adresses : bloqué (même personne), attention (même entreprise, refus récent), ok
+python scripts/contact_guard.py recruteur@entreprise.fr
+```
+
+Les relances (`run_followups.py`) et les brouillons (`create_gmail_draft.py`) consultent cette liste d'office et s'arrêtent sur une adresse bloquée. Un accusé de réception ou un « j'ai transmis votre CV » n'est pas un refus.
+
+### 10. Réseau de contacts et adresse probable
+
+```bash
+# Toutes les personnes avec qui vous avez échangé depuis une date, et le format d'adresse de chaque entreprise
+python scripts/network.py build --depuis 2026-04-01
+
+# Dans Notion : bases « Contacts » (avec niveau de confiance) et « Entreprises et formats d'adresse »
+python scripts/network_notion.py --page <url de la page partagée avec l'intégration>   # première fois
+python scripts/network_notion.py                                                       # mises à jour
+
+# Une offre arrive d'une entreprise connue : adresse probable de la personne repérée sur LinkedIn
+python scripts/network.py adresse "<entreprise ou domaine>" Prénom Nom
+```
+
+Chaque contact est classé du plus chaud au plus froid : opportunité, échange, réponse, refus, sans réponse. Détails et règles dans [docs/connexions.md](docs/connexions.md#réseau-de-contacts).
+
+### 11. Radar LinkedIn (avec Claude Code)
+
+Avec le serveur MCP LinkedIn configuré, demandez à Claude Code de lancer l'agent `linkedin-scout` : il cherche les offres récentes, privilégie celles qui ont peu de candidats et les ajoute à la même file Notion que le radar ATS. Lecture seule : aucune candidature, connexion ou message n'est envoyé.
+
+### 12. Contrôler la tenue des CV
+
+```bash
+python scripts/check_cv_fit.py --all
+```
+
+Chaque CV doit tenir sur une page A4 avec 12 mm de blanc en bas. `render_cv.py --pdf` applique ce contrôle à chaque génération et retire au besoin les derniers projets ; cet outil audite les CV déjà produits.
+
+## Connexions
+
+| Outil | Ce qu'il apporte | Mise en place |
+| :--- | :--- | :--- |
+| Gmail | Brouillons avec CV joint, relances, liste des refus, réseau de contacts | `config/credentials.json` puis `python scripts/auth_gmail.py` |
+| Notion | Suivi des candidatures, bases « Contacts » et « Entreprises » | Intégration interne, `config/.notion_token`, page partagée |
+| LinkedIn | Recherche d'offres peu postulées et de la bonne personne à contacter | Serveur MCP `mcp-server-linkedin`, copier `.mcp.example.json` en `.mcp.json` |
+| Excalidraw | Schémas et cartes de présentation pour les entretiens | Serveur Excalidraw MCP local (`http://localhost:3001/mcp`) |
+
+Le pas à pas complet, les droits demandés et les garde-fous sont dans **[docs/connexions.md](docs/connexions.md)**.
+
 ## Structure du projet
 
 ```text
 job-hunt-kit/
 ├── hunt.py                  CLI unifiée (menu, apply, scan, stats, kit, test...)
 ├── hunt.bat / hunt.sh       Lanceurs double-clic (Windows / macOS-Linux)
+├── .mcp.example.json        Modèle de configuration des serveurs MCP (LinkedIn, Windows, Excalidraw)
 ├── config/                  Cibles ATS, profils de recherche, templates Notion
-├── scripts/                 Pipeline Python : scraping, rendu PDF, Notion, Gmail, relances
+├── scripts/                 Pipeline Python : scraping, rendu PDF, Notion, Gmail, relances,
+│                            garde-fou des refus, réseau de contacts, radar LinkedIn
 ├── templates/
 │   ├── cv/                  cv-data.template.json, cv.css, thèmes navy/emerald/bordeaux
 │   └── lettre/              lettre.css (mise en page corporative coordonnée)
-├── tests/                   Suite pytest (143 tests)
-├── docs/                    Guides de rédaction et plans d'évolution
+├── tests/                   Suite pytest (264 tests)
+├── docs/                    Connexions (connexions.md) et plan d'architecture
 ├── outputs/                 Un dossier par candidature (généré à l'usage, non versionné)
 ├── state/                   Cache et tracking (généré à l'usage, non versionné)
 └── logs/                    Journal d'erreurs (généré à l'usage, non versionné)
@@ -285,7 +340,8 @@ Si vous utilisez un assistant IA compatible (Claude Code, Antigravity), le kit e
 | `relevance-scorer` | Évalue l'adéquation offre/profil sur 100 points, bonus d'autonomie selon l'ATS. |
 | `cv-tailor` | Rédige `cv-vars.json` et `lettre-vars.json`, puis appelle le rendu PDF. |
 | `form-filler` | Remplit les formulaires ATS via Playwright et upload le CV PDF (jamais de CAPTCHA ni de login). |
-| `recruiter-outreach` | Rédige l'email d'accompagnement et la séquence de relances (J+0 à J+10). |
+| `recruiter-outreach` | Rédige l'email d'accompagnement et la séquence de relances (J+0 à J+10), après vérification du garde-fou des refus. |
+| `linkedin-scout` | Cherche des offres récentes et peu postulées sur LinkedIn (serveur MCP), en lecture seule. |
 | Skill `apply-routine` | Orchestre le cycle complet, offre par offre, depuis la file Notion. |
 | Skill `import-profile` | Met à jour le profil depuis un CV existant, diff montré avant toute écriture. |
 
@@ -295,6 +351,8 @@ Deux scripts déterministes (pas des agents IA, aucun coût de token) complèten
 
 - `scripts/run_followups.py` — moteur de relances J+3/5/7/10 avec détection de réponse Gmail, mode brouillons uniquement.
 - `scripts/check_consistency.py` — croise `outputs/`, `state/outreach.json` et Notion, signale les désynchronisations.
+- `scripts/contact_guard.py` — tient la liste des refus et bloque toute relance vers qui a déjà dit non.
+- `scripts/network.py` / `network_notion.py` — réseau de contacts, niveau de confiance et format d'adresse par entreprise, synchronisés dans Notion.
 
 ## Dépannage et FAQ
 
