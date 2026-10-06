@@ -37,6 +37,7 @@ from typing import Any, Dict, List, Optional
 ROOT: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 
+import contact_guard
 from create_gmail_draft import create_draft, find_reply, get_gmail_service
 from logutil import log_error
 from profile import load_personal
@@ -48,27 +49,29 @@ OUTREACH_PATH: str = os.path.join(ROOT, "state", "outreach.json")
 SEQUENCE: List[str] = ["J+0", "J+3", "J+5", "J+7", "J+10"]
 DELAIS_JOURS: Dict[str, int] = {"J+3": 3, "J+5": 5, "J+7": 7, "J+10": 10}
 
-# Reprend fidèlement config/outreach-templates.md (ton court, pas de tiret cadratin, pas de "&").
+# Reprend fidèlement config/outreach-templates.md (pas de tiret cadratin, pas de "&"). Ton revu le
+# 2026-10-03 : les relances étaient jugées trop sèches, « sans cœur ». Elles gardent des phrases simples
+# et sans jargon, mais saluent, remercient et concluent poliment (contrôlé par check_human_tone.check_politesse).
 TEMPLATES: Dict[str, Dict[str, str]] = {
     "J+3": {
         "objet": "Re: Candidature au poste de {poste}",
         "corps": (
             "Bonjour,\n\n"
-            "Je me permets de revenir vers vous au sujet de ma candidature au poste de {poste}. "
-            "Mes réalisations récentes recoupent directement les défis techniques et fonctionnels de vos missions.\n\n"
-            "Je reste disponible pour en discuter quand cela vous convient.\n\n"
-            "Bonne journée,\n{nom}"
+            "J'espère que vous allez bien. Je me permets de revenir vers vous au sujet de ma candidature au poste de "
+            "{poste} chez {entreprise}, que je vous ai adressée il y a quelques jours.\n\n"
+            "Je sais que vous recevez sans doute beaucoup de candidatures, et je vous remercie du temps que vous consacrez "
+            "à la mienne. Ce poste m'intéresse vraiment, et je serais heureux d'en parler avec vous quand cela vous conviendra.\n\n"
+            "Bien cordialement,\n{nom}"
         ),
     },
     "J+5": {
         "objet": "Re: Candidature au poste de {poste}",
         "corps": (
             "Bonjour,\n\n"
-            "Toujours très motivé par le poste de {poste} chez {entreprise}. Je suis disponible rapidement "
-            "et souple sur l'organisation. Mon profil opérationnel me permet d'être immédiatement productif "
-            "sur vos projets.\n\n"
-            "Je serais heureux d'échanger avec vous.\n\n"
-            "Bonne journée,\n{nom}"
+            "Je vous écris à nouveau car le poste de {poste} chez {entreprise} m'intéresse toujours autant. "
+            "Je suis disponible rapidement et je m'adapte volontiers à votre calendrier, si un premier échange est possible.\n\n"
+            "Je vous remercie de votre attention et vous souhaite une très bonne journée.\n\n"
+            "Bien cordialement,\n{nom}"
         ),
     },
     "J+7": {
@@ -76,17 +79,20 @@ TEMPLATES: Dict[str, Dict[str, str]] = {
         "corps": (
             "Bonjour,\n\n"
             "Auriez-vous quelques minutes pour un court échange au sujet du poste de {poste} ? "
-            "Je peux m'adapter à votre agenda, par téléphone ou en visio.\n\n"
-            "Merci d'avance,\n{nom}"
+            "Je peux m'adapter à votre agenda, par téléphone ou en visio, au moment qui vous arrange le mieux.\n\n"
+            "Je vous remercie beaucoup d'avance pour votre retour et vous souhaite une excellente semaine.\n\n"
+            "Bien cordialement,\n{nom}"
         ),
     },
     "J+10": {
         "objet": "Re: Candidature au poste de {poste}",
         "corps": (
             "Bonjour,\n\n"
-            "Je me permets une dernière relance concernant ma candidature au poste de {poste}. "
-            "Si le moment n'est pas opportun, je le comprends tout à fait et reste disponible pour de futures opportunités.\n\n"
-            "Merci pour votre temps,\n{nom}"
+            "Je vous écris une dernière fois au sujet de ma candidature au poste de {poste} chez {entreprise}. "
+            "Si le moment n'est pas le bon, ou si le poste est déjà pourvu, je le comprends tout à fait, "
+            "et je vous remercie sincèrement du temps que vous avez consacré à ma candidature.\n\n"
+            "Je reste à votre disposition si une autre opportunité se présente, et je vous souhaite une très bonne continuation.\n\n"
+            "Bien cordialement,\n{nom}"
         ),
     },
 }
@@ -166,6 +172,7 @@ def sync_notion(
 
 def process_entry(
     entry: Dict[str, Any], service: Any, token: Optional[str], db_id: Optional[str], apply_changes: bool,
+    refusals: Optional[Dict[str, List[Dict[str, str]]]] = None,
 ) -> Dict[str, str]:
     """Traite UNE candidature. Ne lève jamais — toute erreur devient un résultat 'échec' loggé."""
     result: Dict[str, str] = {
@@ -224,7 +231,14 @@ def process_entry(
         result["detail"] = f"échéance {nxt} dans {due_days - elapsed} j"
         return result
 
-    # 3) Échéance atteinte, pas de réponse -> brouillon de relance.
+    # 3) Garde-fou (2026-10-06) : l'entreprise a peut-être refusé par une autre adresse.
+    verdict = contact_guard.check(str(email), refusals or {})
+    if verdict:
+        result["action"] = "ignorée"
+        result["detail"] = f"garde-fou, refus antérieur : {verdict['raison']}"
+        return result
+
+    # 4) Échéance atteinte, pas de réponse -> brouillon de relance.
     personal = load_personal()
     relance = build_relance(nxt, str(entry.get("entreprise", "")), str(entry.get("poste", "")), personal.get("nom", ""))
     if not apply_changes:
@@ -278,11 +292,14 @@ def main() -> None:
         print(f"[info] Notion non configuré, synchronisation ignorée : {e}", file=sys.stderr)
 
     service = get_gmail_service()
+    refusals = contact_guard.load_refusals()
+    if not refusals:
+        print("[info] Liste des refus vide : lancez `python scripts/contact_guard.py --refresh`.", file=sys.stderr)
 
     mode = "[APPLY]" if args.apply else "[DRY-RUN]"
     print(f"{mode} Moteur de relances — {len(entries)} candidature(s) suivie(s)\n")
     for entry in entries:
-        r = process_entry(entry, service, token, db_id, apply_changes=args.apply)
+        r = process_entry(entry, service, token, db_id, apply_changes=args.apply, refusals=refusals)
         suffix = f" — {r['detail']}" if r["detail"] else ""
         print(f"  - {r['entreprise']} / {r['poste']} : {r['action']}{suffix}")
 

@@ -1,7 +1,14 @@
 # Modèle de séquence recruteur (à valider une fois)
 
 Envoi depuis {{email}}. Placeholders : {entreprise}, {poste}, {recruteur}.
-Ton naturel, sans tiret cadratin ni « & ». Personnalisé par offre au moment de l'envoi.
+Ton naturel et chaleureux, sans tiret cadratin ni « & ». Personnalisé par offre au moment de l'envoi.
+
+Règle de ton (2026-10-03, après un retour « trop sec, sans cœur, trop vite ») : des phrases simples et
+sans jargon, mais jamais de mail nu. Toujours une salutation avec le nom quand on le connaît, une phrase
+d'attention (« J'espère que vous allez bien »), un remerciement, un vœu de fin et « Bien cordialement ».
+Pas de flatterie ni de formule creuse, pas de liste sèche de métiers : une personne écrit à une autre.
+Vérifier avec `python scripts/check_human_tone.py --text "<corps>"` (caractères interdits, formules
+creuses, politesse).
 
 ## J+0 — Email initial (le plus consistant)
 Doit mettre en avant : le besoin du poste, les compétences qui y répondent, l'enthousiasme et la
@@ -12,19 +19,19 @@ motivation à rejoindre l'équipe. {besoin_poste} = 1 phrase reformulant la miss
 
 Bonjour{recruteur},
 
-Je me permets de vous adresser ma candidature au poste de {poste} chez {entreprise}, que je viens de
-déposer via votre portail.
+J'espère que vous allez bien. Je me permets de vous écrire au sujet de ma candidature au poste de {poste}
+chez {entreprise}, que je viens de déposer sur votre site.
 
-Actuellement en cycle d'ingénieur Data Science et IA, ce poste m'intéresse particulièrement car
-{besoin_poste}. C'est exactement le type de mission sur lequel je souhaite apporter ma valeur ajoutée.
+Je suis {formation}, et je recherche {type_contrat}. Ce poste m'intéresse particulièrement, car
+{besoin_poste}. Mon parcours y répond sur des points concrets : {competences_match}.
 
-Mon profil y répond concrètement : {competences_match}. Mes projets et expériences m'ont permis de développer
-des compétences solides en conception de pipelines de données, modèles de Machine Learning et architectures IA modernes.
+Je serais très heureux de pouvoir vous rencontrer, en visio ou sur place, pour vous parler de ma candidature
+et de ce que je pourrais apporter à votre équipe.
 
-Au-delà des compétences, c'est l'envie de rejoindre {entreprise} et de contribuer concrètement à vos
-projets qui me motive. Je serais ravi d'échanger avec vous sur ma candidature.
+Je vous remercie par avance pour l'attention que vous porterez à ma candidature, et vous souhaite une très
+bonne journée.
 
-Bonne journée,
+Bien cordialement,
 {{nom}}
 {{email}} · {{telephone}}
 
@@ -33,12 +40,13 @@ Bonne journée,
 
 Bonjour,
 
-Je me permets de revenir vers vous au sujet de ma candidature au poste de {poste}. Mes réalisations récentes
-recoupent directement les défis techniques et fonctionnels de vos missions.
+J'espère que vous allez bien. Je me permets de revenir vers vous au sujet de ma candidature au poste de
+{poste} chez {entreprise}, que je vous ai adressée il y a quelques jours.
 
-Je reste disponible pour en discuter quand cela vous convient.
+Je sais que vous recevez sans doute beaucoup de candidatures, et je vous remercie du temps que vous consacrez
+à la mienne. Ce poste m'intéresse vraiment, et je serais heureux d'en parler avec vous quand cela vous conviendra.
 
-Bonne journée,
+Bien cordialement,
 {{nom}}
 
 ## J+5 — Relance 2
@@ -46,12 +54,12 @@ Bonne journée,
 
 Bonjour,
 
-Toujours très motivé par le poste de {poste} chez {entreprise}. Je suis disponible rapidement et souple sur l'organisation.
-Mon profil opérationnel me permet d'être immédiatement productif sur vos projets.
+Je vous écris à nouveau car le poste de {poste} chez {entreprise} m'intéresse toujours autant. Je suis disponible
+rapidement et je m'adapte volontiers à votre calendrier, si un premier échange est possible.
 
-Je serais heureux d'échanger avec vous.
+Je vous remercie de votre attention et vous souhaite une très bonne journée.
 
-Bonne journée,
+Bien cordialement,
 {{nom}}
 
 ## J+7 — Relance 3
@@ -59,10 +67,12 @@ Bonne journée,
 
 Bonjour,
 
-Auriez-vous quelques minutes pour un court échange au sujet du poste de {poste} ? Je peux m'adapter
-à votre agenda, par téléphone ou en visio.
+Auriez-vous quelques minutes pour un court échange au sujet du poste de {poste} ? Je peux m'adapter à votre
+agenda, par téléphone ou en visio, au moment qui vous arrange le mieux.
 
-Merci d'avance,
+Je vous remercie beaucoup d'avance pour votre retour et vous souhaite une excellente semaine.
+
+Bien cordialement,
 {{nom}}
 
 ## J+10 — Relance finale
@@ -70,9 +80,11 @@ Merci d'avance,
 
 Bonjour,
 
-Je me permets une dernière relance concernant ma candidature au poste de {poste}. Si le moment n'est
-pas opportun, je le comprends tout à fait et reste disponible pour de futures opportunités.
+Je vous écris une dernière fois au sujet de ma candidature au poste de {poste} chez {entreprise}. Si le moment
+n'est pas le bon, ou si le poste est déjà pourvu, je le comprends tout à fait, et je vous remercie sincèrement
+du temps que vous avez consacré à ma candidature.
 
-Merci pour votre temps,
+Je reste à votre disposition si une autre opportunité se présente, et je vous souhaite une très bonne continuation.
+
+Bien cordialement,
 {{nom}}
-

@@ -9,6 +9,7 @@ from datetime import date, timedelta
 from typing import Any, Dict
 import unittest.mock as mock
 
+from check_human_tone import check_politesse, check_text
 from run_followups import (
     anchor_plus,
     build_relance,
@@ -53,6 +54,16 @@ def test_build_relance_no_forbidden_chars() -> None:
         # Règle projet : jamais de tiret cadratin ni de "&" dans le contenu généré.
         assert "—" not in r["corps"]
         assert "&" not in r["corps"]
+
+
+def test_build_relance_est_polie_et_sans_formule_creuse() -> None:
+    """Retour du 2026-10-03 : des relances « sans cœur ». Chacune doit saluer, remercier et conclure poliment."""
+    for etape in ["J+3", "J+5", "J+7", "J+10"]:
+        corps = build_relance(etape, "Exemple Corp", "Data Scientist", "Jean Dupont")["corps"]
+        assert check_politesse(corps) == [], f"{etape} : politesse manquante"
+        assert check_text(corps)["ok"], f"{etape} : {check_text(corps)}"
+        assert "Bien cordialement" in corps and corps.rstrip().endswith("Jean Dupont")
+        assert "{" not in corps  # aucun placeholder oublié
 
 
 @mock.patch("run_followups.find_reply")
@@ -121,14 +132,14 @@ def test_process_entry_passes_known_alias_to_find_reply(mock_find_reply: mock.Ma
     mock_find_reply.return_value = None
     entry = _entry(
         etape="J+0", jours_ecoules=1,
-        email="nolwenn.jezequel@mer.gouv.fr",
-        email_alias_connue="nolwenn.jezequel@developpement-durable.gouv.fr",
+        email="agent.public@mer-exemple.gouv.fr",
+        email_alias_connue="agent.public@ministere-exemple.gouv.fr",
     )
     process_entry(entry, service=mock.MagicMock(), token=None, db_id=None, apply_changes=True)
     emails_checked = mock_find_reply.call_args[0][1]
     assert set(emails_checked) == {
-        "nolwenn.jezequel@mer.gouv.fr",
-        "nolwenn.jezequel@developpement-durable.gouv.fr",
+        "agent.public@mer-exemple.gouv.fr",
+        "agent.public@ministere-exemple.gouv.fr",
     }
 
 

@@ -45,7 +45,7 @@ DATABASE_ID_RE = re.compile(r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9
 
 
 def database_id_from_url(url: str) -> str:
-    # https://app.notion.com/p/3b437a76d2a7451694a03c28680b630b -> UUID
+    # https://app.notion.com/p/0123456789abcdef0123456789abcdef -> UUID
     frag = url.rstrip("/").split("/")[-1].split("?")[0].split("-")[-1]
     frag = frag[-32:]
     db_id = "-".join([frag[0:8], frag[8:12], frag[12:16], frag[16:20], frag[20:32]])

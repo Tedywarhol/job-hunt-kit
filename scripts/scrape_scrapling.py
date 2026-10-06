@@ -12,6 +12,7 @@ Sort le texte extrait (ou la page) sur stdout, en JSON.
 """
 import argparse
 import json
+import sys
 from typing import Any, Dict, List, Optional
 
 

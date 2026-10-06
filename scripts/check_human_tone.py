@@ -9,6 +9,12 @@ LLM) sur les deux points les plus concrets déjà exigés ailleurs dans le proje
   1. Caractères interdits : « — » (tiret cadratin) et « & » (le formulaire encode &amp;).
   2. Formules creuses fréquentes dans un texte généré par IA — signalées pour relecture,
      jamais bloquantes (une expression légitime peut apparaître dans un contexte correct).
+  3. Politesse d'un email entier (`--text`) : salutation, remerciement, formule de fin.
+     Ajouté le 2026-10-03 : les mails rédigés étaient jugés trop secs, « sans cœur ». Un mail
+     poli n'est pas un mail creux : on garde des phrases simples, mais on n'omet jamais ces trois-là.
+  4. Posture répétitive : « avez-vous une place dans votre équipe, sinon redirigez-moi ». Retour du
+     2026-10-03 : il peut n'y avoir aucune place et la personne peut ne pas pouvoir rediriger ; la
+     posture se choisit selon la personne. Signalée pour relecture.
 
 Usage:
   python scripts/check_human_tone.py outputs/<slug>/lettre-vars.json
@@ -41,15 +47,50 @@ FORMULES_CREUSES: List[str] = [
 ]
 
 
+# Réflexe de posture à éviter (retour du 2026-10-03) : demander à chaque fois « avez-vous une place dans votre équipe,
+# sinon redirigez-moi vers quelqu'un ». Il peut n'y avoir aucune place, et la personne peut ne pas pouvoir rediriger :
+# la posture se choisit selon la personne (candidature à un recruteur, intérêt et court échange avec un dirigeant,
+# simple présentation « au cas où » avec un responsable). Signalé pour relecture, comme les formules creuses.
+POSTURES_REPETITIVES: List[str] = [
+    "la bonne personne",
+    "une personne à qui m'adresser",
+    "me rediriger",
+    "me mettre en relation avec",
+    "besoin d'un alternant",
+    "besoin d'alternant",
+    "accueille des alternants",
+    "accueillent-elles des alternants",
+]
+
+# Marqueurs de politesse attendus dans un corps d'email. Vérifiés sur un email entier seulement
+# (jamais paragraphe par paragraphe : un paragraphe de lettre n'a pas à saluer ni à conclure).
+MARQUEURS_POLITESSE: Dict[str, List[str]] = {
+    "salutation (Bonjour...)": ["bonjour", "madame", "monsieur"],
+    "remerciement (merci, je vous remercie...)": ["merci", "remercie", "reconnaissant"],
+    "formule de fin (Bien cordialement...)": [
+        "cordialement", "bien à vous", "bonne journée", "excellente journée", "bonne continuation",
+        "excellente semaine", "bonne semaine", "bonne soirée",
+    ],
+}
+
+
+def check_politesse(text: str) -> List[str]:
+    """Marqueurs de politesse absents d'un corps d'email entier (liste vide si rien ne manque)."""
+    t_lower = text.lower()
+    return [nom for nom, mots in MARQUEURS_POLITESSE.items() if not any(m in t_lower for m in mots)]
+
+
 def check_text(text: str) -> Dict[str, Any]:
     """Analyse un texte : caractères interdits présents, formules creuses détectées."""
     chars_found = [c for c in FORBIDDEN_CHARS if c in text]
     t_lower = text.lower()
     formules_found = [f for f in FORMULES_CREUSES if f in t_lower]
+    postures_found = [p for p in POSTURES_REPETITIVES if p in t_lower]
     return {
         "chars_interdits": chars_found,
         "formules_creuses": formules_found,
-        "ok": not chars_found and not formules_found,
+        "postures_repetitives": postures_found,
+        "ok": not chars_found and not formules_found and not postures_found,
     }
 
 
@@ -80,6 +121,8 @@ def render_report(label: str, result: Dict[str, Any]) -> str:
     if result["formules_creuses"]:
         for f in result["formules_creuses"]:
             lines.append(f"      formule creuse à relire : « {f} »")
+    for p in result.get("postures_repetitives", []):
+        lines.append(f"      posture répétitive à relire : « {p} » (ne demandez pas à chaque fois une place ou une redirection)")
     return "\n".join(lines)
 
 
@@ -99,8 +142,11 @@ def main() -> None:
     all_ok = True
     if args.text:
         result = check_text(args.text)
-        all_ok = result["ok"]
+        manque = check_politesse(args.text)
+        all_ok = result["ok"] and not manque
         print(render_report("(texte fourni)", result))
+        if manque:
+            print("  ⚠️  politesse : il manque " + ", ".join(manque))
     else:
         with open(args.path, "r", encoding="utf-8") as f:
             data = json.load(f)

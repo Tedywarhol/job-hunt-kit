@@ -55,7 +55,7 @@ def test_find_reply_finds_reply_on_alias_address() -> None:
     service = _service_returning([{"threadId": "thread-alias"}])
     thread_id = find_reply(
         service,
-        ["nolwenn.jezequel@mer.gouv.fr", "nolwenn.jezequel@developpement-durable.gouv.fr"],
+        ["agent.public@mer-exemple.gouv.fr", "agent.public@ministere-exemple.gouv.fr"],
         "2026-09-01",
     )
     assert thread_id == "thread-alias"

@@ -26,7 +26,7 @@ description: Quality gate — checklist exhaustive avant commit, PR, ou livraiso
 - [ ] Aucun secret committé — scan rapide du diff
 - [ ] `.env` gitignored, `.env.example` à jour
 - [ ] Inputs user → validés avant tout usage SQL / shell / fichier / fetch
-- [ ] **RLS active** sur toutes les tables Supabase touchées
+- [ ] **RLS active** sur toutes les tables Supabase touchées (projet Supabase uniquement)
 - [ ] Auth vérifiée à chaque endpoint sensible (pas seulement côté UI)
 - [ ] Pas de données sensibles en log
 - [ ] CORS / CSP configurés volontairement, pas par défaut
@@ -39,6 +39,12 @@ description: Quality gate — checklist exhaustive avant commit, PR, ou livraiso
 - [ ] Server Components par défaut (Next App Router) ; `"use client"` uniquement si nécessaire
 - [ ] Images servies en formats modernes (avif/webp), `next/image` ou équivalent
 
+## Interface (si le changement touche un écran)
+- [ ] Tout bouton désactivé dit pourquoi, en clair à côté du bouton (pas seulement au survol), avec le moyen d'y remédier
+- [ ] Ces raisons viennent de la même règle que les refus du serveur : une seule source de vérité, jamais deux listes qui divergent
+- [ ] Aucune valeur choisie d'office quand plusieurs options existent et qu'un mauvais choix fausserait le résultat
+- [ ] Vérifié à l'écran (capture), sur des données réelles quand c'est possible, pas seulement par les tests
+
 ## Tests
 - [ ] Au moins 1 test pour le chemin nominal
 - [ ] 1 test par edge case identifié en phase brainstorm
@@ -49,7 +55,7 @@ description: Quality gate — checklist exhaustive avant commit, PR, ou livraiso
 - [ ] README à jour si comportement public change
 - [ ] Commentaires expliquent **pourquoi**, jamais **quoi**
 - [ ] Variables d'env documentées dans `.env.example`
-- [ ] Migrations Supabase versionnées et nommées clairement
+- [ ] Migrations de base de données (Supabase, SQLite ou autre) versionnées et nommées clairement
 
 ## Sortie
 Si tout est vert : « ✅ Quality gate passée — N items vérifiés. »

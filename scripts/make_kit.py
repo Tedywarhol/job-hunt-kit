@@ -48,6 +48,13 @@ EXCLUDE_PATTERNS: List[str] = [
     ".v2c/*",
     ".video_agent/*",
     ".zcode/*",
+    ".gstack/*",
+    ".linkedin-mcp-fork/*",
+    "node_modules/*",
+    # Application de démonstration tierce (modèle « agent-native ») posée à côté du kit, avec sa propre
+    # base locale : ni du code du kit ni générique (dette D3 du 2026-10-06, ses fichiers datés de 1970
+    # faisaient échouer la création du zip).
+    "ui-agent/*",
     ".venv/*",
     "__pycache__/*",
     "*/__pycache__/*",
@@ -58,7 +65,7 @@ EXCLUDE_PATTERNS: List[str] = [
     "job-hunt-kit_*.zip",
 
     # Framework de règles personnel de l'utilisateur (.claude/rules/), pas spécifique à ce
-    # projet — référence gstack, un tracker "Propulse V2" et des défauts Next.js/Supabase
+    # projet — référence gstack, un tracker de projet personnel et des défauts Next.js/Supabase
     # sans rapport avec ce kit Python. Découvert le 2026-09-08 : partagerait des règles
     # incohérentes/déroutantes avec le projet reçu par un tiers. Seules les règles
     # réellement génériques restent (00-core, audit sécurité, quality-gate, context7-docs,
@@ -70,10 +77,22 @@ EXCLUDE_PATTERNS: List[str] = [
     ".claude/rules/20-ecriture-multiagents.mdc",
     ".claude/rules/20-new-project.mdc",
     ".claude/rules/30-new-feature.mdc",
+    # Même famille, arrivés le 2026-10 : principes de code et de délégation de l'utilisateur, et commandes
+    # slash d'un autre de ses projets (chemins locaux), sans rapport avec ce kit.
+    ".claude/rules/clean-code-principles.mdc",
+    ".claude/rules/external-code-reuse.mdc",
+    ".claude/rules/model-tiering-delegation.mdc",
+    ".claude/rules/project-documentation.mdc",
+    ".claude/commands/*",
 
     # Personal PDFs in root if any
     "CV_*.pdf",
     "Lettre_*.pdf",
+    # Supports d'atelier de tiers (guide CV nominatif) : usage personnel, jamais redistribués.
+    "docs/guides/*",
+    "Guide CV_*.pdf",
+    # Configuration MCP locale (chemins absolus de la machine) : le kit fournit .mcp.example.json.
+    ".mcp.json",
 
     # Données/session personnelles (audit daté, routine liée au compte de l'utilisateur,
     # page de référence visuelle statique non paramétrée) — cf. décision du 2026-09-08 :

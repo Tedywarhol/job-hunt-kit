@@ -16,7 +16,7 @@ from typing import Any, Dict, List, Optional, Union
 ROOT: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 from profile import date_lettre_aujourdhui, doc_base_names, ville_from_localisation
-from render_cv import find_chrome, load_json, to_pdf
+from render_cv import find_chrome, load_json, scale_css, to_pdf
 
 CV_DATA: str = os.path.join(ROOT, "templates", "cv", "cv-data.json")
 LETTRE_DIR: str = os.path.join(ROOT, "templates", "lettre")
@@ -46,13 +46,16 @@ def build_paragraphs_html(paragraphes: List[Any]) -> str:
 def build_html(data: Dict[str, Any], v: Dict[str, Any]) -> str:
     p = data["personal"]
     prof_key = v.get("type", "alternance")
-    role = data["profiles"].get(prof_key, {}).get("titre_defaut", "Alternance Data Science & IA")
+    role = v.get("titre_lettre") or data["profiles"].get(prof_key, {}).get("titre_defaut", "Alternance Data Science & IA")
 
     with open(os.path.join(LETTRE_DIR, "lettre.css"), "r", encoding="utf-8") as f:
         css = f.read()
+    style = data.get("style", {})
+    if style.get("letter_font_scale") or style.get("letter_line_height_scale"):
+        css = scale_css(css, style.get("letter_font_scale", 1.0), style.get("letter_line_height_scale", 1.0))
 
     paras_html = build_paragraphs_html(v.get("paragraphes", []))
-    objet = v.get("objet", f"Candidature — {v.get('poste', '')}")
+    objet = v.get("objet", f"Candidature : {v.get('poste', '')}")
     entreprise = v.get("entreprise", "Direction des Ressources Humaines")
     org_sub = v.get("service", "")
     org_sub_html = f'<div class="org-sub">{esc(org_sub)}</div>' if org_sub else ""
@@ -60,9 +63,10 @@ def build_html(data: Dict[str, Any], v: Dict[str, Any]) -> str:
     date_str = v.get("date") or date_lettre_aujourdhui()
     ville_candidat = v.get("ville_candidat") or ville_from_localisation(p)
     salut = esc(v.get("destinataire", "Madame, Monsieur"))
+    cordial = esc(v["formule_finale"]) if v.get("formule_finale") else f"Je vous prie d'agréer, {salut}, l'expression de mes salutations distinguées."
 
     return (
-        f'<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Lettre de Motivation — {esc(p["nom"])}</title>'
+        f'<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Lettre de Motivation {esc(p["nom"])}</title>'
         f'<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
         f'<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">'
         f'<style>{css}</style></head><body><div class="page">'
@@ -72,7 +76,7 @@ def build_html(data: Dict[str, Any], v: Dict[str, Any]) -> str:
         f'<div class="meta"><div><div class="to">{esc(entreprise)}</div>{org_sub_html}</div><div class="place">{esc(ville_candidat)}, le {esc(date_str)}</div></div>'
         f'<div class="subject-box">Objet : <span class="accent">{esc(objet)}</span></div>'
         f'<div class="body"><p class="salut">{salut},</p>{paras_html}</div>'
-        f'<div class="sign"><div class="cordial">Je vous prie d\'agréer, {salut}, l\'expression de mes salutations distinguées.</div>'
+        f'<div class="sign"><div class="cordial">{cordial}</div>'
         f'<div class="who">{esc(p["nom"])}</div></div></div></body></html>'
     )
 
@@ -98,9 +102,9 @@ def main() -> None:
 
     if args.pdf:
         pdf_path = os.path.splitext(out_html)[0] + ".pdf"
-        title = f"Lettre de motivation — {p.get('nom', 'Candidat')}"
+        title = f"Lettre de motivation - {p.get('nom', 'Candidat')}"
         author = p.get("nom", "Candidat")
-        subject = f"Lettre de motivation — {p.get('nom', '')}"
+        subject = f"Lettre de motivation - {p.get('nom', '')}"
         if to_pdf(out_html, pdf_path, title=title, author=author, subject=subject):
             print("PDF:", pdf_path)
 

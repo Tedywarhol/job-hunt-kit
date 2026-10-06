@@ -26,11 +26,13 @@ def test_hunt_status() -> None:
     assert "Moteur PDF" in res.stdout
 
 
-def test_hunt_cv_preview() -> None:
-    # Génération d'un CV en HTML/PDF de prévisualisation
-    res = subprocess.run([PY, "hunt.py", "cv", "--profile", "alternance"], capture_output=True, text=True)
+def test_hunt_cv_preview(tmp_path: Any) -> None:
+    # Génération d'un CV en HTML de prévisualisation
+    out_html = str(tmp_path / "cv_preview.html")
+    res = subprocess.run([PY, "hunt.py", "cv", "--profile", "alternance", "--out", out_html], capture_output=True, text=True)
     assert res.returncode == 0
     assert "HTML:" in res.stdout
+    assert os.path.isfile(out_html)
 
 
 def test_slugify() -> None:

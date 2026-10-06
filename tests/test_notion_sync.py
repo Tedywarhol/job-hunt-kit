@@ -21,9 +21,9 @@ from push_notion import (
 
 
 def test_database_id_from_url_formats_uuid() -> None:
-    url = "https://app.notion.com/p/3b437a76d2a7451694a03c28680b630b"
+    url = "https://app.notion.com/p/0123456789abcdef0123456789abcdef"
     db_id = database_id_from_url(url)
-    assert db_id == "3b437a76-d2a7-4516-94a0-3c28680b630b"
+    assert db_id == "01234567-89ab-cdef-0123-456789abcdef"
 
 
 def test_database_id_from_url_rejects_template_placeholder() -> None:
