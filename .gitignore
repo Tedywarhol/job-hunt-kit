@@ -53,8 +53,8 @@ job-hunt-kit_*.zip
 .linkedin-mcp-fork/
 
 # Hors projet ou propre à cette machine (2026-10-06, même liste que make_kit.py)
-# - application de démonstration tierce (modèle « agent-native ») et sa base locale
-ui-agent/
+# - ui-agent/ est versionné ; son propre .gitignore exclut .env, .agent-native/ (jetons de dev),
+#   data/ (base locale des conversations), node_modules et les builds
 # - commandes slash d'un autre projet et principes personnels de l'utilisateur
 .claude/commands/
 .claude/rules/clean-code-principles.mdc

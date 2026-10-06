@@ -46,13 +46,13 @@ Options disponibles :
 - `--notion-token <token>` & `--notion-page-url <url>` : configure et crée automatiquement la base Notion "Candidatures".
 - `--non-interactive` : exécution non-interactive (batch / CI).
 - `python hunt.py kit` : produit l'archive `job-hunt-kit_<date>.zip` nettoyée de tout secret pour le partage.
-- `python hunt.py test` : exécute la suite de tests automatisée (264 tests unitaires et intégration).
+- `python hunt.py test` : exécute la suite de tests automatisée (274 tests unitaires et intégration).
 - `python hunt.py stats` : affiche le tableau de bord analytique de recherche et suivi des relances.
 
 ## Layout
 
 - `hunt.py` — CLI unifiée du workspace (`init`, `apply`, `open`, `cv`, `lettre`, `scan`, `notion`, `draft`, `stats`, `status`, `kit`, `test`).
-- `tests/` — Suite de tests automatisée pytest (264 tests) :
+- `tests/` — Suite de tests automatisée pytest (274 tests) :
   - `test_ats_connectors.py` — Tests des parsers Greenhouse/Lever/Ashby, normalisation des dates ISO/Unix/FR, bonus de récence et filtres de pertinence (fonctions hors-scope, langue étrangère).
   - `test_dashboard.py` — Tests des indicateurs de fraîcheur, entonnoir de conversion, suivi CRM et statut réel Notion.
   - `test_profile.py` — Tests d'identité, nommage de fichiers, villes et dates en français.
@@ -98,8 +98,10 @@ Options disponibles :
   - `network.py` / `network_patterns.py` / `network_lookup.py` / `gmail_reader.py` — Réseau de contacts depuis Gmail : personnes échangées, niveau de confiance (opportunité à sans réponse), format d'adresse par entreprise, adresse probable d'une personne repérée sur LinkedIn (`network.py adresse`).
   - `network_notion.py` — Bases Notion « Contacts » et « Entreprises et formats d'adresse », créées puis mises à jour sans doublon.
   - `check_cv_fit.py` — Audit de tenue des CV déjà générés (une page A4, 12 mm de blanc en bas), rapport seul.
+  - `ui_data.py` — JSON du tableau de bord de l'interface graphique `ui-agent/` : relances dues (échéances J+3 à J+10 de `state/outreach.json`), statuts, offres, réseau par niveau de confiance, dossiers récents. Lecture seule ; `--sans-notion` pour aller vite, `--demo` pour des données fictives. Toute la logique du tableau de bord vit ici, l'écran ne fait que l'afficher.
   - `notion_apply.py` / `push_notion.py` / `push_pass_to_notion.py` — Synchronisation API Notion REST (`push_notion.py` porte les helpers partagés : pagination, lecture de propriétés, recherche par entreprise+poste).
   - `deprecated/radar_run.py` — Ancien radar ATS, mis à l'écart le 2026-09-07 (doublon divergent de `scrape_ats_api.py`, cf. `docs/plans/2026-09-07-plan-amelioration.md` M0). Conservé pour référence, ne pas réintégrer.
+- `ui-agent/` — Interface graphique locale (Node, modèle « chat » du framework agent-native + actions qui appellent les scripts ci-dessus) : écran `/dashboard` et chat. Voir `ui-agent/README.md` et `ui-agent/AGENTS.md` (actions, règles : aucun envoi, garde-fou avant tout message). Tests : `cd ui-agent && pnpm test`.
 - `templates/cv/` — `cv-data.template.json` (squelette modèle), `cv-data.json` (contenu maître local), `cv.css` (Design System Navy/Slate A4 thémable), `themes/` (navy, emerald, bordeaux).
 - `templates/lettre/` — `lettre.css` (mise en page corporative coordonnée et thémable).
 - `config/` — `companies.yaml` (20+ entreprises tech cibles ATS), `notion.template.json`, `notion.json`, `search-profiles.yaml`, `outreach-templates.md`.
