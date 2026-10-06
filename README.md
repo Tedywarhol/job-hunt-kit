@@ -42,6 +42,8 @@ Le kit repose sur un pipeline en trois temps :
 
 Le schéma se modifie dans [`docs/diagrams/pipeline.html`](docs/diagrams/pipeline.html), dessiné avec le plugin Claude Code [diagram-design](https://github.com/cathrynlavery/diagram-design).
 
+Pour comprendre le détail (le radar, le passage de l'offre au brouillon Gmail, le réseau de contacts, l'interface), cinq schémas et leurs explications sont dans **[docs/architecture.md](docs/architecture.md)**.
+
 Deux principes structurent tout le reste :
 
 - **Une seule source de vérité.** Le contenu maître du CV vit dans `templates/cv/cv-data.json` ; chaque candidature n'ajoute que des variables (`cv-vars.json`, `lettre-vars.json`) dans son dossier `outputs/<slug>/`.
@@ -341,7 +343,7 @@ job-hunt-kit/
 │   └── lettre/              lettre.css (mise en page corporative coordonnée)
 ├── ui-agent/                Interface graphique locale : tableau de bord et chat (Node, voir son README)
 ├── tests/                   Suite pytest (274 tests)
-├── docs/                    Connexions (connexions.md), schéma du pipeline (diagrams/) et plan d'architecture
+├── docs/                    Architecture (architecture.md) et ses 5 schémas, connexions (connexions.md), plan d'amélioration
 ├── outputs/                 Un dossier par candidature (généré à l'usage, non versionné)
 ├── state/                   Cache et tracking (généré à l'usage, non versionné)
 └── logs/                    Journal d'erreurs (généré à l'usage, non versionné)
