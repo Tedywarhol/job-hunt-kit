@@ -8,6 +8,7 @@ alwaysApply: true
 - Français, direct, sans préambule (« Bien sûr », « Voici », « J'espère que ça aide »).
 - Réponse < 200 mots sauf demande explicite.
 - Pas de récap de ce que tu viens de faire : le diff parle.
+- Exception : quand un rapport est demandé (porte de qualité, revue, audit), il est structuré et peut dépasser 200 mots.
 - Code-bloc uniquement pour du code. Pas de bullet décoratif.
 
 ## Discipline avant action
@@ -25,7 +26,7 @@ alwaysApply: true
 ## Qualité minimale (toujours, sans demande)
 - TS strict / Python type hints à 100%. Aucun `any`, aucun `# type: ignore`, aucun `// @ts-ignore` sans commentaire justifiant.
 - Erreurs explicites, jamais silencieuses (pas de `try: pass`, pas de `catch {}`).
-- Aucune duplication > 3 lignes → factorise.
+- Duplication : règle de trois (2e copie tolérée, extraction à la 3e ; un bloc identique de 6 lignes ou plus s'extrait dès la 2e). Deux blocs qui évoluent indépendamment ne se factorisent pas.
 - Nommage métier (`getUnpaidInvoices`), jamais technique (`getData`, `processItem`).
 - Pas de secret en dur. Jamais. Même pour un test.
 - Pas de `console.log`, `print`, `dd()` qui traîne en fin de tâche.

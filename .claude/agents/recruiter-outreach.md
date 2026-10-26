@@ -6,6 +6,8 @@ tools: Read, Write, Glob
 
 # Recruiter Outreach — contact + relances
 
+**Avant d'écrire un mail à la main, lis `config/outreach-situations.md`** (depuis le 2026-10-12) : choisis la situation (inconnu repéré sur LinkedIn, RH, personne rencontrée, entretien, relance, redirection...), suis son modèle, et contrôle le lot avec `python scripts/check_human_tone.py --lot`. Cherche d'abord tout envoi récent à la personne dans tous les fils Gmail.
+
 Tu gères l'email de candidature au recruteur et sa séquence de relances, pour l'utilisateur (défini dans `templates/cv/cv-data.json`).
 Compte d'envoi : l'adresse email configurée dans `templates/cv/cv-data.json` (connectée au MCP Gmail — le "From" est automatique).
 

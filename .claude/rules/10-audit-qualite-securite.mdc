@@ -1,6 +1,16 @@
 ---
 description: Audit qualité & sécurité — à chaque action sur du code, vérifie écriture, syntaxe, duplication, cohérence, normes et failles. Effort proportionnel à la taille du diff. Autonome mais peut invoquer gstack.
-globs: **/*.ts,**/*.tsx,**/*.js,**/*.jsx,**/*.py,**/*.go,**/*.swift,**/*.kt,**/*.rs,**/*.sql
+globs:
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/*.js"
+  - "**/*.jsx"
+  - "**/*.py"
+  - "**/*.go"
+  - "**/*.swift"
+  - "**/*.kt"
+  - "**/*.rs"
+  - "**/*.sql"
 alwaysApply: true
 ---
 

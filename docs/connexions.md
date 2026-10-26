@@ -132,6 +132,22 @@ le radar ATS (`state/pending-notion-upsert.json`, puis `push_notion.py`). Il ser
 Garde-fous : l'agent est en **lecture seule**. Il n'envoie ni candidature, ni demande de connexion, ni
 message. Respectez les conditions d'utilisation de LinkedIn et gardez un rythme raisonnable.
 
+**Outils du serveur** (`mcp__mcp-server-linkedin__*`) :
+
+- Lecture seule. Recherche : `search_jobs`, `get_job_details`, `get_saved_jobs`, `search_people`,
+  `search_companies`, `search_posts`. Profils et entreprises : `get_my_profile`, `get_person_profile`,
+  `get_company_profile`, `get_company_posts`, `get_company_employees`, `get_sidebar_profiles`. Fil et
+  messagerie : `get_feed`, `get_inbox`, `get_conversation`, `search_conversations`. Session : `close_session`.
+- Écriture : `connect_with_person` (demande de connexion), `send_message` (message), `edit_profile_intro`,
+  `edit_profile_about` et `add_experience` (profil ; les trois acceptent `dry_run`). Aucun appel sans brouillon
+  montré et accord explicite de la personne.
+
+**Sans `.mcp.json` (ou sans redémarrer Claude Code)** : `scripts/linkedin_cli.py` lance le même serveur en
+sous-processus avec votre session déjà enregistrée et n'appelle que des outils de lecture
+(`python scripts/linkedin_cli.py outils`, `appel search_people '{"keywords": "...", "location": "France"}'`, ou
+`lot travaux.json sortie.json` pour une série reprenable). Il refuse toute écriture, y compris `connect_with_person`.
+Il faut un interpréteur où le paquet `mcp` est installé, par exemple celui de `.linkedin-mcp-fork/.venv`.
+
 **Variante avancée (facultative)** : une copie locale du serveur, dans `.linkedin-mcp-fork/` (non
 versionnée), peut ajouter des outils d'édition du profil (`edit_profile_intro`, `edit_profile_about`,
 `add_experience`). Dans `.mcp.json`, remplacez alors la commande par :
