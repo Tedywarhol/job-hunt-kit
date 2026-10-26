@@ -36,6 +36,7 @@ EXCLUDE_PATTERNS: List[str] = [
     "config/.notion_token",
     "config/credentials.json",
     "config/gmail_token.json",
+    "config/gmail_token.json.*",
     "config/auth_url.txt",
     ".env",
     "*.env",
