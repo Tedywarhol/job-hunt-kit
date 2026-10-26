@@ -67,3 +67,27 @@ docs/guides/
 Guide CV_*.pdf
 # - configuration MCP locale (chemins absolus) : modèle versionné dans .mcp.example.json
 .mcp.json
+
+# Données personnelles du candidat : contacts, entreprises suivies, entretiens, prospection (2026-10-26)
+# Déjà couverts plus haut par state/ et outputs/ : réseau (state/network*.json, outputs/reseau/),
+# prospection (state/prospection*.json, outputs/prospection/), refus (state/refus.json),
+# entretiens passés (outputs/entretiens/), dossiers de candidature (outputs/<slug>/).
+# Fichiers hors de ces dossiers :
+config/outreach-situations.md
+docs/plans/*candidatures-spontanees*.md
+# Filets de sécurité si un export ou un document atterrit ailleurs :
+entretiens/
+reseau/
+contacts/
+network*.json
+prospection*.json
+refus*.json
+contacts*.json
+contacts*.csv
+entreprises*.json
+entreprises*.csv
+*.vcf
+
+# Caches générés (graphe de code, cache de Vite)
+graphify-out/
+ui-agent/.vite/
