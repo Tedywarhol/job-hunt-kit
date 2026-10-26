@@ -38,6 +38,7 @@ ROOT: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 
 import contact_guard
+import followups_spontanee
 from create_gmail_draft import create_draft, find_reply, get_gmail_service
 from logutil import log_error
 from profile import load_personal
@@ -47,7 +48,9 @@ import push_notion as pn
 OUTREACH_PATH: str = os.path.join(ROOT, "state", "outreach.json")
 
 SEQUENCE: List[str] = ["J+0", "J+3", "J+5", "J+7", "J+10"]
-DELAIS_JOURS: Dict[str, int] = {"J+3": 3, "J+5": 5, "J+7": 7, "J+10": 10}
+# Candidatures spontanées : sept jours au moins entre deux mails (config/outreach-situations.md, cadence).
+SEQUENCE_SPONTANEE: List[str] = ["J+0", "J+7", "J+14"]
+DELAIS_JOURS: Dict[str, int] = {"J+3": 3, "J+5": 5, "J+7": 7, "J+10": 10, "J+14": 14}
 
 # Reprend fidèlement config/outreach-templates.md (pas de tiret cadratin, pas de "&"). Ton revu le
 # 2026-10-03 : les relances étaient jugées trop sèches, « sans cœur ». Elles gardent des phrases simples
@@ -78,7 +81,7 @@ TEMPLATES: Dict[str, Dict[str, str]] = {
         "objet": "Re: Candidature au poste de {poste}",
         "corps": (
             "Bonjour,\n\n"
-            "Auriez-vous quelques minutes pour un court échange au sujet du poste de {poste} ? "
+            "Auriez-vous quelques minutes pour un court échange au sujet du poste de {poste}\xa0? "
             "Je peux m'adapter à votre agenda, par téléphone ou en visio, au moment qui vous arrange le mieux.\n\n"
             "Je vous remercie beaucoup d'avance pour votre retour et vous souhaite une excellente semaine.\n\n"
             "Bien cordialement,\n{nom}"
@@ -98,11 +101,12 @@ TEMPLATES: Dict[str, Dict[str, str]] = {
 }
 
 
-def next_step(etape: str) -> Optional[str]:
-    if etape not in SEQUENCE:
+def next_step(etape: str, sequence: Optional[List[str]] = None) -> Optional[str]:
+    steps = sequence or SEQUENCE
+    if etape not in steps:
         return None
-    idx = SEQUENCE.index(etape)
-    return SEQUENCE[idx + 1] if idx + 1 < len(SEQUENCE) else None
+    idx = steps.index(etape)
+    return steps[idx + 1] if idx + 1 < len(steps) else None
 
 
 def days_since(date_iso: str) -> int:
@@ -127,7 +131,9 @@ def save_outreach(entries: List[Dict[str, Any]]) -> None:
         json.dump(entries, f, ensure_ascii=False, indent=2)
 
 
-def build_relance(etape: str, entreprise: str, poste: str, nom: str) -> Dict[str, str]:
+def build_relance(etape: str, entreprise: str, poste: str, nom: str, entry: Optional[Dict[str, Any]] = None) -> Dict[str, str]:
+    if entry and entry.get("type") == "spontanee":
+        return followups_spontanee.build(etape, entry, nom)
     tpl = TEMPLATES[etape]
     return {
         "objet": tpl["objet"].format(poste=poste),
@@ -148,7 +154,7 @@ def sync_notion(
     token: Optional[str], db_id: Optional[str], entry: Dict[str, Any],
     etape_notion: Optional[str], statut_notion: Optional[str], date_prochaine: Optional[str],
 ) -> None:
-    if not token or not db_id:
+    if not token or not db_id or entry.get("sans_notion"):
         return
     try:
         pid = notion_page_id(token, db_id, entry)
@@ -215,10 +221,11 @@ def process_entry(
         return result
 
     # 2) Étape suivante et échéance.
-    nxt = next_step(etape)
+    sequence = entry.get("sequence") or SEQUENCE
+    nxt = next_step(etape, sequence)
     if not nxt:
         result["action"] = "clôturée"
-        result["detail"] = "J+10 dépassé sans réponse"
+        result["detail"] = f"{etape} dépassé sans réponse"
         if apply_changes:
             entry["etape"] = "Terminé"
             entry["statut"] = "Terminé"
@@ -240,7 +247,7 @@ def process_entry(
 
     # 4) Échéance atteinte, pas de réponse -> brouillon de relance.
     personal = load_personal()
-    relance = build_relance(nxt, str(entry.get("entreprise", "")), str(entry.get("poste", "")), personal.get("nom", ""))
+    relance = build_relance(nxt, str(entry.get("entreprise", "")), str(entry.get("poste", "")), personal.get("nom", ""), entry)
     if not apply_changes:
         result["action"] = f"préparerait un brouillon {nxt}"
         result["detail"] = relance["objet"]
@@ -263,7 +270,7 @@ def process_entry(
     result["action"] = f"brouillon {nxt} créé"
     result["detail"] = f"id={draft.get('id')}"
 
-    apres = next_step(nxt)
+    apres = next_step(nxt, sequence)
     date_prochaine = anchor_plus(anchor, DELAIS_JOURS[apres]) if apres else None
     sync_notion(token, db_id, entry, etape_notion=nxt, statut_notion=None, date_prochaine=date_prochaine)
     return result

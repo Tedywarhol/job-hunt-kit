@@ -78,10 +78,17 @@ def create_draft(
     attachment_path: Optional[str] = None,
     attachment_paths: Optional[List[str]] = None,
     from_email: Optional[str] = None,
+    thread_id: Optional[str] = None,
+    in_reply_to: Optional[str] = None,
 ) -> Dict[str, Any]:
+    """Crée un brouillon. `thread_id` + `in_reply_to` (en-tête Message-ID du message auquel on répond) le rangent
+    dans le fil existant au lieu d'ouvrir une nouvelle conversation."""
     message = MIMEMultipart()
     message["to"] = to_email
     message["subject"] = subject
+    if in_reply_to:
+        message["In-Reply-To"] = in_reply_to
+        message["References"] = in_reply_to
     sender = from_email or load_personal().get("email", "")
     if sender:
         message["from"] = sender
@@ -107,7 +114,9 @@ def create_draft(
             print(f"Pièce jointe ajoutée : {filename}")
 
     raw_message = base64.urlsafe_b64encode(message.as_bytes()).decode("utf-8")
-    draft_body = {"message": {"raw": raw_message}}
+    draft_body: Dict[str, Any] = {"message": {"raw": raw_message}}
+    if thread_id:
+        draft_body["message"]["threadId"] = thread_id
 
     draft: Dict[str, Any] = service.users().drafts().create(userId="me", body=draft_body).execute()
     return draft
