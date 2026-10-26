@@ -16,15 +16,21 @@ LLM) sur les deux points les plus concrets déjà exigés ailleurs dans le proje
      2026-10-03 : il peut n'y avoir aucune place et la personne peut ne pas pouvoir rediriger ; la
      posture se choisit selon la personne. Signalée pour relecture.
 
+  5. Langue (ajouté le 2026-10-12, cf. `mail_lint.py`) : adjectif mal rattaché, tics de rédaction, pronom ambigu,
+     typographie ; en lot (`--lot`), phrases recopiées d'un mail à l'autre ; orthographe lexicale facultative.
+
 Usage:
   python scripts/check_human_tone.py outputs/<slug>/lettre-vars.json
-  python scripts/check_human_tone.py --text "corps d'email à vérifier"
+  python scripts/check_human_tone.py --text "corps d'email à vérifier" [--orthographe]
+  python scripts/check_human_tone.py --lot mails.json    # {"nom": "corps", ...} ou dossier de fichiers .txt
 """
 import argparse
 import json
-import re
+import os
 import sys
 from typing import Any, Dict, List
+
+from mail_lint import fautes_orthographe, phrases_communes, verifier_langue
 
 FORBIDDEN_CHARS: Dict[str, str] = {
     "—": "tiret cadratin — remplacer par une virgule, un point, ou reformuler",
@@ -86,11 +92,13 @@ def check_text(text: str) -> Dict[str, Any]:
     t_lower = text.lower()
     formules_found = [f for f in FORMULES_CREUSES if f in t_lower]
     postures_found = [p for p in POSTURES_REPETITIVES if p in t_lower]
+    langue = verifier_langue(text)
     return {
         "chars_interdits": chars_found,
         "formules_creuses": formules_found,
         "postures_repetitives": postures_found,
-        "ok": not chars_found and not formules_found and not postures_found,
+        "langue": langue,
+        "ok": not (chars_found or formules_found or postures_found or langue),
     }
 
 
@@ -123,40 +131,67 @@ def render_report(label: str, result: Dict[str, Any]) -> str:
             lines.append(f"      formule creuse à relire : « {f} »")
     for p in result.get("postures_repetitives", []):
         lines.append(f"      posture répétitive à relire : « {p} » (ne demandez pas à chaque fois une place ou une redirection)")
+    for remarque in result.get("langue", []):
+        lines.append(f"      langue : {remarque}")
     return "\n".join(lines)
+
+
+def charger_lot(chemin: str) -> Dict[str, str]:
+    """Mails d'un lot : un JSON {nom: corps}, ou un dossier de fichiers .txt (un mail par fichier)."""
+    if os.path.isdir(chemin):
+        noms = sorted(n for n in os.listdir(chemin) if n.endswith(".txt"))
+        return {n: open(os.path.join(chemin, n), encoding="utf-8").read() for n in noms}
+    with open(chemin, "r", encoding="utf-8") as f:
+        return dict(json.load(f))
+
+
+def rapport_lot(mails: Dict[str, str], orthographe: bool) -> bool:
+    """Contrôle chaque mail d'un lot, puis les phrases communes entre mails. True si rien à signaler."""
+    tout_ok = True
+    for nom, corps in mails.items():
+        result = check_text(corps)
+        manque = check_politesse(corps)
+        fautes = fautes_orthographe(corps) if orthographe else []
+        tout_ok = tout_ok and result["ok"] and not manque and not fautes
+        print(render_report(nom, result))
+        if manque:
+            print("      politesse : il manque " + ", ".join(manque))
+        if fautes:
+            print("      orthographe à relire : " + ", ".join(fautes))
+    communes = phrases_communes(mails)
+    for a, b, phrase in communes:
+        print(f"  ⚠️  phrase commune à « {a} » et « {b} » : « {phrase[:90]} »")
+    return tout_ok and not communes
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="Checklist de ton humain pour lettres/emails.")
     ap.add_argument("path", nargs="?", help="Fichier lettre-vars.json à vérifier")
     ap.add_argument("--text", help="Texte brut à vérifier directement (ex. corps d'email)")
+    ap.add_argument("--lot", help="JSON {nom: corps} ou dossier de .txt : compare aussi les mails entre eux")
+    ap.add_argument("--orthographe", action="store_true", help="Ajoute l'orthographe lexicale (pyspellchecker, facultatif)")
     args = ap.parse_args()
 
-    if not args.path and not args.text:
-        sys.exit("Fournissez un fichier lettre-vars.json ou --text \"...\".")
+    if not (args.path or args.text or args.lot):
+        sys.exit("Fournissez un fichier lettre-vars.json, --text \"...\" ou --lot <mails>.")
 
     print("\n" + "=" * 60)
     print("CHECKLIST TON HUMAIN")
     print("=" * 60 + "\n")
 
-    all_ok = True
-    if args.text:
-        result = check_text(args.text)
-        manque = check_politesse(args.text)
-        all_ok = result["ok"] and not manque
-        print(render_report("(texte fourni)", result))
-        if manque:
-            print("  ⚠️  politesse : il manque " + ", ".join(manque))
+    if args.lot:
+        all_ok = rapport_lot(charger_lot(args.lot), args.orthographe)
+    elif args.text:
+        all_ok = rapport_lot({"(texte fourni)": args.text}, args.orthographe)
     else:
         with open(args.path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-        texts = extract_texts_from_lettre_vars(data)
+            texts = extract_texts_from_lettre_vars(json.load(f))
         if not texts:
             sys.exit(f"Aucun paragraphe trouvé dans {args.path}.")
-        for i, t in enumerate(texts, 1):
-            result = check_text(t)
-            all_ok = all_ok and result["ok"]
+        results = [check_text(t) for t in texts]
+        for i, result in enumerate(results, 1):
             print(render_report(f"paragraphe {i}", result))
+        all_ok = all(r["ok"] for r in results)
 
     print("\n" + ("✅ Rien à signaler." if all_ok else "⚠️  Points à relire ci-dessus (avertissement, pas un blocage)."))
     print("=" * 60 + "\n")
