@@ -50,3 +50,6 @@ learnings.md
 
 # Base locale des conversations (jamais versionnée)
 data/
+
+# Cache de Vite (dossier local créé au lancement de pnpm dev)
+.vite/
